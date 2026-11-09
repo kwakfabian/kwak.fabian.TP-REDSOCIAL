@@ -1,0 +1,122 @@
+<section class="register">
+
+  <h1>Crear cuenta</h1>
+  <p>Registrate en KwakSocial</p>
+
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+    <div>
+      <label for="nombre">Nombre</label>
+      <input type="text" id="nombre" formControlName="nombre" placeholder="Ingresá tu nombre">
+
+      @if (registerForm.get('nombre')?.touched && registerForm.get('nombre')?.invalid) {
+        <small>El nombre debe tener entre 2 y 15 caracteres.</small>
+      }
+    </div>
+
+    <div>
+      <label for="apellido">Apellido</label>
+      <input type="text" id="apellido" formControlName="apellido" placeholder="Ingresá tu apellido">
+
+      @if (registerForm.get('apellido')?.touched && registerForm.get('apellido')?.invalid) {
+        <small>El apellido debe tener entre 2 y 15 caracteres.</small>
+      }
+    </div>
+
+    <div>
+      <label for="email">Correo electronico</label>
+      <input type="email" id="email" formControlName="email" placeholder="ejemplo@gmail.com">
+
+      @if (registerForm.get('email')?.touched && registerForm.get('email')?.invalid) {
+        <small>Ingresa un correo electronico valido.</small>
+      }
+    </div>
+
+    <div>
+      <label for="nombreDeUsuario">Nombre de usuario</label>
+      <input type="text" id="nombreDeUsuario" formControlName="nombreDeUsuario" placeholder="Elegí un usuario">
+
+      @if (registerForm.get('nombreDeUsuario')?.touched && registerForm.get('nombreDeUsuario')?.invalid) {
+        <small>El usuario debe tener entre 2 y 20 caracteres.</small>
+      }
+    </div>
+
+    <div>
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" formControlName="password" placeholder="Ingresá una contraseña">
+
+      @if (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) {
+        <small>La contraseña debe tener al menos 8 caracteres, una mayuscula y un numero.</small>
+      }
+    </div>
+
+    <div>
+      <label for="repetirpassword">Repetir contraseña</label>
+      <input type="password" id="repetirpassword" formControlName="repetirpassword" placeholder="Repetí tu contraseña">
+
+      @if (registerForm.get('repetirpassword')?.touched && registerForm.get('repetirpassword')?.invalid) {
+        <small>Debes repetir tu contraseña.</small>
+      }
+
+      @if (registerForm.hasError('passwordDistintas') && registerForm.get('repetirpassword')?.touched) {
+        <small>Las contraseñas no coinciden.</small>
+      }
+    </div>
+
+    <div>
+      <label for="fechaDeNacimiento">Fecha de nacimiento</label>
+      <input type="date" id="fechaDeNacimiento" formControlName="fechaDeNacimiento">
+
+      @if (registerForm.get('fechaDeNacimiento')?.touched && registerForm.get('fechaDeNacimiento')?.invalid) {
+        <small>La fecha de nacimiento es obligatoria.</small>
+      }
+    </div>
+
+    <div>
+      <label for="descripcionBreve">Descripcion breve</label>
+      <textarea
+        id="descripcionBreve"
+        formControlName="descripcionBreve"
+        placeholder="Contanos algo sobre vos"
+        rows="4">
+      </textarea>
+
+      @if (registerForm.get('descripcionBreve')?.touched && registerForm.get('descripcionBreve')?.invalid) {
+        <small>La descripcion es obligatoria y no puede superar los 200 caracteres.</small>
+      }
+    </div>
+
+    <div>
+      <label for="fotoPerfil">Foto de perfil</label>
+      <input
+        type="file"
+        id="fotoPerfil"
+        accept="image/*"
+        (change)="seleccionarFoto($event)"
+      >
+
+      @if (fotoPerfil()) {
+        <small>Imagen seleccionada: {{ fotoPerfil()?.name }}</small>
+      }
+    </div>
+
+    @if (errorMessage()) {
+      <p class="error">{{ errorMessage() }}</p>
+    }
+
+    @if (successMessage()) {
+      <p class="success">{{ successMessage() }}</p>
+    }
+
+    <button type="submit" [disabled]="isLoading()">
+      {{ isLoading() ? 'Registrando...' : 'Registrarse' }}
+    </button>
+
+  </form>
+
+  <p>
+    ¿Ya tenes una cuenta?
+    <a routerLink="/login">Iniciar sesion</a>
+  </p>
+
+</section>
