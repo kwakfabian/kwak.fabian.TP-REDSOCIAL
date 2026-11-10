@@ -1,31 +1,47 @@
-import { IsString, IsNotEmpty, MinLength, MaxLength, IsDateString } from 'class-validator';
-import { CredencialesDto } from './credenciales.dto.js';
+import { Transform } from 'class-transformer';
+import { IsString, IsNotEmpty, IsEmail, MinLength, MaxLength, IsDateString, Matches, IsByteLength } from 'class-validator';
 
-export class RegistroDto extends CredencialesDto {
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(2)
-  @MaxLength(100)
-  nombre: string;
+export class RegistroDto {
 
   @IsString()
   @IsNotEmpty()
   @MinLength(2)
   @MaxLength(100)
-  apellido: string;
+  nombre!: string;
 
   @IsString()
   @IsNotEmpty()
-  nombreUsuario: string;
+  @MinLength(2)
+  @MaxLength(100)
+  apellido!: string;
+
+  @Transform(({ value }: { value: unknown }) =>
+    typeof value === 'string' ? value.trim().toLowerCase() : value
+  )
+  @IsEmail()
+  @MaxLength(254)
+  email!: string;
 
   @IsString()
   @IsNotEmpty()
-  repetirPassword: string;
+  nombreUsuario!: string;
+
+  @IsString()
+  @MinLength(8)
+  @Matches(/^(?=.*[A-Z])(?=.*[0-9]).+$/, {
+    message: 'La contraseña debe contener al menos una mayúscula y un número'
+  })
+  @IsByteLength(0, 72)
+  password!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  repetirPassword!: string;
 
   @IsDateString()
-  fechaNacimiento: string;
+  fechaNacimiento!: string;
 
   @IsString()
   @IsNotEmpty()
-  descripcionBreve: string;
+  descripcionBreve!: string;
 }

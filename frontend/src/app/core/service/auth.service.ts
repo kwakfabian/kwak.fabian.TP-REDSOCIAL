@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Usuario } from '../models/usuario.interface';
@@ -14,6 +14,7 @@ export interface RegistroUsuario {
     correo: string;
     nombreDeUsuario: string;
     password: string;
+    repetirPassword: string;
     fechaDeNacimiento: string;
     descripcionBreve: string;
     fotoPerfil: File | null;
@@ -45,16 +46,17 @@ export class AuthService {
     signUp(datos: RegistroUsuario) {
         const formData = new FormData();
 
-        formData.append('correo', datos.correo);
+        formData.append('email', datos.correo);
         formData.append('password', datos.password);
+        formData.append('repetirPassword', datos.repetirPassword);
         formData.append('nombre', datos.nombre);
         formData.append('apellido', datos.apellido);
-        formData.append('nombreDeUsuario', datos.nombreDeUsuario);
-        formData.append('fechaDeNacimiento', datos.fechaDeNacimiento);
+        formData.append('nombreUsuario', datos.nombreDeUsuario);
+        formData.append('fechaNacimiento', datos.fechaDeNacimiento);
         formData.append('descripcionBreve', datos.descripcionBreve);
 
         if (datos.fotoPerfil) {
-            formData.append('fotoPerfil', datos.fotoPerfil);
+            formData.append('imagenPerfil', datos.fotoPerfil);
         }
 
         return this.http.post<Sesion>(
@@ -69,7 +71,13 @@ export class AuthService {
     }
 
     private cargarPerfil() {
-        return this.http.get<Usuario>(this.url + '/me').pipe(
+        const token = this.accesToken();
+
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`
+        });
+
+        return this.http.get<Usuario>(this.url + '/me', { headers }).pipe(
             tap((perfil) => {
                 this.currentUser.set(perfil);
                 this.currentUserData.set(perfil);

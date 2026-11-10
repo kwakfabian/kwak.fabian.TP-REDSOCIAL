@@ -11,7 +11,8 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(Usuario.name) private readonly usuarios: Model<Usuario>,
+    @InjectModel(Usuario.name)
+    private readonly usuarios: Model<Usuario>,
     private readonly jwt: JwtService,
   ) {}
 
@@ -48,8 +49,15 @@ export class AuthService {
   }
 
   async login(datos: CredencialesDto) {
+    const identificador = datos.identificador.trim();
+
     const usuario = await this.usuarios
-      .findOne({ email: datos.email })
+      .findOne({
+        $or: [
+          { email: identificador.toLowerCase() },
+          { nombreUsuario: identificador },
+        ],
+      })
       .select('+passwordHash')
       .exec();
 

@@ -73,42 +73,44 @@ export class Register {
   errorMessage = signal<string|null>(null);
   successMessage = signal<string|null>(null);
 
-  onSubmit(){
+  onSubmit() {
     this.registerForm.markAllAsTouched();
     if (this.registerForm.invalid) return;
-  
-      this.isLoading.set(true);
-      this.errorMessage.set(null);
-      this.successMessage.set(null);
 
-      const {nombre, apellido, email, nombreDeUsuario, password, fechaDeNacimiento, descripcionBreve} = this.registerForm.value;
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+    this.successMessage.set(null);
 
-      this.authService.signUp({
-        nombre: nombre!, 
-        apellido: apellido!, 
-        correo: email!, 
-        nombreDeUsuario: nombreDeUsuario!, 
-        password: password!, 
-        fechaDeNacimiento: fechaDeNacimiento!, 
-        descripcionBreve: descripcionBreve!, 
-        fotoPerfil: this.fotoPerfil()}).subscribe({
-        next: (sesion) => {
-          this.authService.iniciarSesion(sesion.access_token).subscribe({
-            next: () => {
-              this.isLoading.set(false);
-              this.router.navigate(['/publicaciones']);
-            },
-            error: (error) => {
-              this.authService.signOut();
-              this.errorMessage.set(apiError(error));
-              this.isLoading.set(false);
-            },
-          });
-        },
-        error: (error) => {
-          this.errorMessage.set(apiError(error));
-          this.isLoading.set(false);
-        },
-      });
-    }
+    const {nombre, apellido, email, nombreDeUsuario, password, repetirpassword, fechaDeNacimiento, descripcionBreve} = this.registerForm.value;
+
+    this.authService.signUp({
+      nombre: nombre!,
+      apellido: apellido!,
+      correo: email!,
+      nombreDeUsuario: nombreDeUsuario!,
+      password: password!,
+      repetirPassword: repetirpassword!,
+      fechaDeNacimiento: fechaDeNacimiento!,
+      descripcionBreve: descripcionBreve!,
+      fotoPerfil: this.fotoPerfil()
+    }).subscribe({
+      next: (sesion) => {
+        this.authService.iniciarSesion(sesion.access_token).subscribe({
+          next: () => {
+            this.isLoading.set(false);
+            this.router.navigate(['/publicaciones']);
+          },
+          error: (error) => {
+            this.authService.signOut();
+            this.errorMessage.set(apiError(error));
+            this.isLoading.set(false);
+          }
+        });
+      },
+      error: (error) => {
+        this.errorMessage.set(apiError(error));
+        this.isLoading.set(false);
+      }
+    });
   }
+}
