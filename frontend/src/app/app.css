@@ -1,0 +1,42 @@
+:host {
+    display: flex;
+    flex-direction: column;
+
+    min-height: 100vh;
+    min-height: 100dvh;
+
+    background-color: #090909;
+    color: #ffffff;
+
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* HEADER */
+
+app-header {
+    display: block;
+    width: 100%;
+    flex-shrink: 0;
+
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* CONTENIDO PRINCIPAL */
+
+main {
+    display: block;
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* FOOTER */
+
+app-footer {
+    display: block;
+    width: 100%;
+    flex-shrink: 0;
+}

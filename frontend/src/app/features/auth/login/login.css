@@ -1,0 +1,151 @@
+.login {
+    width: 90%;
+    max-width: 420px;
+    margin: 70px auto;
+    padding: 40px 35px;
+    box-sizing: border-box;
+
+    background-color: #111111;
+    border: 1px solid #292929;
+    border-radius: 16px;
+
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.login h1 {
+    margin: 0 0 10px;
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.login > p {
+    margin: 0 0 35px;
+    text-align: center;
+    color: #999999;
+    font-size: 14px;
+}
+
+.login form {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.login form > div {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.login label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #dddddd;
+}
+
+.login input {
+    width: 100%;
+    padding: 13px 15px;
+    box-sizing: border-box;
+
+    background-color: #1c1c1c;
+    border: 1px solid #333333;
+    border-radius: 8px;
+    outline: none;
+
+    color: #ffffff;
+    font-size: 14px;
+
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.login input::placeholder {
+    color: #777777;
+}
+
+.login input:focus {
+    border-color: #008cff;
+    box-shadow: 0 0 0 3px rgba(0, 140, 255, 0.12);
+}
+
+.login small {
+    color: #ff6b6b;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.login .error {
+    margin: 0;
+    padding: 12px 14px;
+
+    background-color: rgba(255, 70, 70, 0.08);
+    border: 1px solid rgba(255, 70, 70, 0.25);
+    border-radius: 8px;
+
+    color: #ff7777;
+    font-size: 13px;
+    text-align: center;
+}
+
+.login button {
+    width: 100%;
+    padding: 14px;
+
+    background-color: #008cff;
+    border: none;
+    border-radius: 8px;
+
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.login button:hover:not(:disabled) {
+    background-color: #0075d6;
+    transform: translateY(-1px);
+}
+
+.login button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.login button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.login > p:last-child {
+    margin: 30px 0 0;
+    color: #999999;
+    font-size: 13px;
+    text-align: center;
+}
+
+.login a {
+    color: #008cff;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.login a:hover {
+    color: #55b5ff;
+    text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+    .login {
+        width: 92%;
+        margin: 35px auto;
+        padding: 30px 22px;
+    }
+
+    .login h1 {
+        font-size: 25px;
+    }
+}

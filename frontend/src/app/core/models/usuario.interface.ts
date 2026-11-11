@@ -2,10 +2,10 @@ export interface Usuario {
   id: string;
   nombre: string;
   apellido: string;
-  correo: string;
-  nombreDeUsuario: string;
-  fechaDeNacimiento: string;
-  descrpicionBreve:string;
-  fotoPerfil: string|null;
-  rol: 'usuario'|'administrador';
+  email: string;
+  nombreUsuario: string;
+  fechaNacimiento: string;
+  descripcionBreve: string;
+  imagenPerfil: string | null;
+  perfil: 'usuario' | 'administrador';
 }

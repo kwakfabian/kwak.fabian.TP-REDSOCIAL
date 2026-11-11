@@ -1,1 +1,74 @@
-<p>publicaciones works!</p>
+<section class="seccion-publicaciones">
+
+    <div class="encabezado-publicaciones">
+        <h1>Publicaciones</h1>
+
+        <div class="ordenamiento">
+            <span>Ordenar por:</span>
+
+            <button
+                type="button"
+                [class.activo]="ordenSeleccionado() === 'fecha'"
+                [disabled]="cargando()"
+                (click)="cambiarOrden('fecha')"
+            >
+                Más recientes
+            </button>
+
+            <button
+                type="button"
+                [class.activo]="ordenSeleccionado() === 'likes'"
+                [disabled]="cargando()"
+                (click)="cambiarOrden('likes')"
+            >
+                Más likes
+            </button>
+        </div>
+    </div>
+
+    @if (cargando()) {
+        <p>Cargando publicaciones...</p>
+
+    } @else if (mensajeError()) {
+        <p class="mensaje-error">{{ mensajeError() }}</p>
+
+    } @else if (publicaciones().length === 0) {
+        <p>Todavía no hay publicaciones.</p>
+
+    } @else {
+        <div class="lista-publicaciones">
+
+            @for (publicacion of publicaciones(); track publicacion._id) {
+                <app-publicaciones-card
+                    [publicacion]="publicacion"
+                    (publicacionEliminada)="publicacionEliminada($event)"
+                />
+
+            }
+        </div>
+
+        @if (totalPaginas() > 1) {
+            <div class="paginacion">
+                <button
+                    type="button"
+                    [disabled]="paginaActual() === 1"
+                    (click)="paginaAnterior()"
+                >
+                    Anterior
+                </button>
+
+                <span>
+                    Página {{ paginaActual() }} de {{ totalPaginas() }}
+                </span>
+
+                <button
+                    type="button"
+                    [disabled]="paginaActual() >= totalPaginas()"
+                    (click)="paginaSiguiente()"
+                >
+                    Siguiente
+                </button>
+            </div>
+        }
+    }
+</section>

@@ -1,1 +1,72 @@
-<p>mi-perfil works!</p>
+<section class="mi-perfil">
+
+  @if (authService.currentUserData(); as usuario) {
+
+    <h1>Mi Perfil</h1>
+
+    <div class="perfil-datos">
+
+      <div class="perfil-imagen">
+        @if (usuario.imagenPerfil) {
+          <img [src]="usuario.imagenPerfil" alt="Foto de perfil">
+        } @else {
+          <p>Sin foto de perfil</p>
+        }
+      </div>
+
+      <div class="perfil-informacion">
+        <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
+        <p><strong>Apellido:</strong> {{ usuario.apellido }}</p>
+        <p><strong>Correo:</strong> {{ usuario.email }}</p>
+        <p><strong>Nombre de usuario:</strong> {{ usuario.nombreUsuario }}</p>
+        <p><strong>Fecha de nacimiento:</strong> {{ usuario.fechaNacimiento }}</p>
+        <p><strong>Descripción:</strong> {{ usuario.descripcionBreve }}</p>
+        <p><strong>Perfil:</strong> {{ usuario.perfil }}</p>
+      </div>
+
+    </div>
+
+    <div class="perfil-publicaciones">
+
+      <h2>Mis últimas 3 publicaciones</h2>
+
+      @if (cargandoPublicaciones()) {
+        <p>Cargando publicaciones...</p>
+      } @else if (errorPublicaciones()) {
+        <p>{{ errorPublicaciones() }}</p>
+      } @else if (publicaciones().length === 0) {
+        <p>Todavía no realizaste ninguna publicación.</p>
+      } @else {
+
+        @for (publicacion of publicaciones(); track publicacion._id) {
+
+          <article class="perfil-publicacion">
+
+            <h3>{{ publicacion.titulo }}</h3>
+
+            <p>{{ publicacion.descripcion }}</p>
+
+            @if (publicacion.imagenUrl) {
+              <img
+                [src]="publicacion.imagenUrl"
+                alt="Imagen de la publicación"
+              >
+            }
+
+            <p>Me gusta: {{ publicacion.cantidadLikes }}</p>
+
+          </article>
+
+        }
+
+      }
+
+    </div>
+
+  } @else {
+
+    <p>No se encontraron los datos del usuario.</p>
+
+  }
+
+</section>

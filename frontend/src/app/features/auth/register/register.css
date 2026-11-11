@@ -1,0 +1,232 @@
+.register {
+    width: 90%;
+    max-width: 750px;
+    margin: 50px auto;
+    padding: 40px;
+    box-sizing: border-box;
+
+    background-color: #111111;
+    border: 1px solid #292929;
+    border-radius: 16px;
+
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.register h1 {
+    margin: 0 0 10px;
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.register > p {
+    margin: 0 0 35px;
+    text-align: center;
+    color: #999999;
+    font-size: 14px;
+}
+
+.register form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.register form > div {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-width: 0;
+}
+
+.register label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #dddddd;
+}
+
+.register input,
+.register textarea {
+    width: 100%;
+    padding: 13px 15px;
+    box-sizing: border-box;
+
+    background-color: #1c1c1c;
+    border: 1px solid #333333;
+    border-radius: 8px;
+    outline: none;
+
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 14px;
+
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.register input::placeholder,
+.register textarea::placeholder {
+    color: #777777;
+}
+
+.register input:focus,
+.register textarea:focus {
+    border-color: #008cff;
+    box-shadow: 0 0 0 3px rgba(0, 140, 255, 0.12);
+}
+
+.register textarea {
+    resize: vertical;
+    min-height: 110px;
+    line-height: 1.5;
+}
+
+.register input[type="date"] {
+    color-scheme: dark;
+    min-height: 46px;
+}
+
+.register input[type="file"] {
+    padding: 10px;
+    cursor: pointer;
+    color: #aaaaaa;
+    font-size: 13px;
+}
+
+.register input[type="file"]::file-selector-button {
+    padding: 9px 13px;
+    margin-right: 12px;
+
+    background-color: #292929;
+    border: 1px solid #444444;
+    border-radius: 6px;
+
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.register input[type="file"]::file-selector-button:hover {
+    background-color: #383838;
+}
+
+.register small {
+    color: #ff7777;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.register form > div:nth-child(8),
+.register form > div:nth-child(9) {
+    grid-column: 1 / -1;
+}
+
+.register .error,
+.register .success {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 12px 14px;
+    border-radius: 8px;
+
+    font-size: 13px;
+    text-align: center;
+}
+
+.register .error {
+    background-color: rgba(255, 70, 70, 0.08);
+    border: 1px solid rgba(255, 70, 70, 0.25);
+    color: #ff7777;
+}
+
+.register .success {
+    background-color: rgba(40, 190, 110, 0.08);
+    border: 1px solid rgba(40, 190, 110, 0.25);
+    color: #62d99b;
+}
+
+.register button[type="submit"] {
+    grid-column: 1 / -1;
+
+    width: 100%;
+    padding: 14px;
+
+    background-color: #008cff;
+    border: none;
+    border-radius: 8px;
+
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.register button[type="submit"]:hover:not(:disabled) {
+    background-color: #0075d6;
+    transform: translateY(-1px);
+}
+
+.register button[type="submit"]:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.register button[type="submit"]:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.register > p:last-child {
+    margin: 30px 0 0;
+    color: #999999;
+    font-size: 13px;
+    text-align: center;
+}
+
+.register a {
+    color: #008cff;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.register a:hover {
+    color: #55b5ff;
+    text-decoration: underline;
+}
+
+@media (max-width: 650px) {
+    .register {
+        width: 92%;
+        margin: 30px auto;
+        padding: 30px 22px;
+    }
+
+    .register form {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .register form > div:nth-child(8),
+    .register form > div:nth-child(9) {
+        grid-column: auto;
+    }
+
+    .register h1 {
+        font-size: 25px;
+    }
+}
+
+@media (max-width: 380px) {
+    .register {
+        padding: 25px 16px;
+    }
+
+    .register input[type="file"]::file-selector-button {
+        margin-right: 6px;
+        padding: 8px;
+    }
+}

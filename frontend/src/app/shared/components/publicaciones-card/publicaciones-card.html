@@ -1,0 +1,66 @@
+<article class="publicacion-card">
+
+    <div class="publicacion-contenido">
+
+        <h2>{{ publicacion().titulo }}</h2>
+
+        <p class="descripcion">
+            {{ publicacion().descripcion }}
+        </p>
+
+        @if (publicacion().imagenUrl) {
+            <img
+                class="publicacion-imagen"
+                [src]="'http://localhost:3100' + publicacion().imagenUrl"
+                [alt]="publicacion().titulo"
+            >
+        }
+
+        <div class="publicacion-info">
+
+            <button
+                type="button"
+                class="boton-like"
+                [class.activo]="tieneLike()"
+                [disabled]="procesandoLike() || eliminando()"
+                (click)="cambiarLike()"
+            >
+                @if (tieneLike()) {
+                    ❤️
+                } @else {
+                    🤍
+                }
+            </button>
+
+            <span>{{ totalLikes() }} likes</span>
+
+            <span>
+                {{ publicacion().createdAt | date:'dd/MM/yyyy HH:mm' }}
+            </span>
+
+            @if (esPropietario() || esAdministrador()) {
+                <button
+                    type="button"
+                    class="boton-eliminar"
+                    [disabled]="eliminando() || procesandoLike()"
+                    (click)="eliminarPublicacion()"
+                >
+                    @if (eliminando()) {
+                        Eliminando...
+                    } @else {
+                        Eliminar
+                    }
+                </button>
+            }
+
+        </div>
+
+        @if (mensajeError()) {
+            <p class="mensaje-error">
+                {{ mensajeError() }}
+            </p>
+        }
+
+    </div>
+
+</article>

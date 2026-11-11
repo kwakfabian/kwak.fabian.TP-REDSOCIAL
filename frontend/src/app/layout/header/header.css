@@ -1,0 +1,123 @@
+header {
+    width: 100%;
+    min-height: 75px;
+    padding: 0 5%;
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+
+    background-color: #111111;
+    border-bottom: 1px solid #292929;
+
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* LOGO */
+
+header h2 {
+    margin: 0;
+
+    color: #008cff;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -1px;
+
+    white-space: nowrap;
+}
+
+/* NAVEGACION */
+
+header nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+header nav a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 11px 17px;
+
+    color: #aaaaaa;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+
+    border-radius: 8px;
+
+    transition: background-color 0.2s, color 0.2s;
+}
+
+header nav a:hover {
+    background-color: #202020;
+    color: #ffffff;
+}
+
+/* RUTA ACTIVA */
+
+header nav a.active {
+    background-color: rgba(0, 140, 255, 0.12);
+    color: #008cff;
+}
+
+/* CERRAR SESION */
+
+header nav a:last-child {
+    margin-left: 12px;
+
+    border: 1px solid #333333;
+    color: #cccccc;
+}
+
+header nav a:last-child:hover {
+    background-color: rgba(255, 70, 70, 0.08);
+    border-color: rgba(255, 70, 70, 0.35);
+    color: #ff7777;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 700px) {
+    header {
+        padding: 15px 5%;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    header h2 {
+        font-size: 24px;
+    }
+
+    header nav {
+        width: 100%;
+        justify-content: center;
+        gap: 5px;
+    }
+
+    header nav a {
+        flex: 1;
+        padding: 10px 8px;
+        font-size: 12px;
+        text-align: center;
+    }
+
+    header nav a:last-child {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 380px) {
+    header nav a {
+        padding: 10px 5px;
+        font-size: 11px;
+    }
+}
