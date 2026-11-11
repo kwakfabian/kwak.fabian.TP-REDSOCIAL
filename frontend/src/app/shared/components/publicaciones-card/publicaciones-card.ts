@@ -56,6 +56,12 @@ export class PublicacionesCard {
         return this.cantidadLikes() ?? this.publicacion().cantidadLikes;
     });
 
+    obtenerUrlImagen(ruta: string): string {
+        if (!ruta) return '';
+        if (ruta.startsWith('http://') || ruta.startsWith('https://')) return ruta;
+        return `http://localhost:3100/${ruta.replace(/^\/+/, '')}`;
+    }
+
     cambiarLike() {
         if (this.procesandoLike() || this.eliminando()) return;
 

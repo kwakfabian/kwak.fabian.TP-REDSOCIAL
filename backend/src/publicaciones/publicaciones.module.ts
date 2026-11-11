@@ -4,6 +4,7 @@ import { PublicacionesController } from './publicaciones.controller.js';
 import { PublicacionesService } from './publicaciones.service.js';
 import { Publicaciones, PublicacionesSchema } from './publicaciones.schema.js';
 import { Usuario, UsuarioSchema } from '../auth/usuario.schema.js';
+import { ImagenesService } from '../auth/imagenes.service.js';
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { Usuario, UsuarioSchema } from '../auth/usuario.schema.js';
     ])
   ],
   controllers: [PublicacionesController],
-  providers: [PublicacionesService],
+  providers: [PublicacionesService, ImagenesService],
 })
 export class PublicacionesModule {}

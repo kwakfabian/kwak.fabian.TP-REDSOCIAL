@@ -4,9 +4,7 @@ import { PublicacionesService } from './publicaciones.service.js';
 import { CrearPublicacionesDto } from './publicaciones.dto.js';
 import { JwtAuthGuard } from '../auth/jwt.auth.guard.js';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'node:path';
-import { randomUUID } from 'node:crypto';
+import { memoryStorage } from 'multer';
 
 @Controller('publicaciones')
 export class PublicacionesController {
@@ -19,13 +17,7 @@ export class PublicacionesController {
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(
         FileInterceptor('imagen', {
-            storage: diskStorage({
-                destination: './uploads/publicaciones',
-                filename: (req, file, callback) => {
-                    const nombre = randomUUID() + extname(file.originalname);
-                    callback(null, nombre);
-                }
-            }),
+            storage: memoryStorage(),
             limits: { fileSize: 5 * 1024 * 1024 },
             fileFilter: (req, file, callback) => {
                 if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.mimetype)) {
@@ -43,15 +35,7 @@ export class PublicacionesController {
         @Req() req: Request & { user: { sub: string } },
         @UploadedFile() imagen?: Express.Multer.File
     ) {
-        const imagenUrl = imagen
-            ? `/uploads/publicaciones/${imagen.filename}`
-            : '';
-
-        return this.publicacionesService.crear(
-            datos,
-            req.user.sub,
-            imagenUrl
-        );
+        return this.publicacionesService.crear(datos, req.user.sub, imagen);
     }
 
     @Get()
@@ -75,10 +59,7 @@ export class PublicacionesController {
         @Param('id') id: string,
         @Req() req: Request & { user: { sub: string } }
     ) {
-        return this.publicacionesService.eliminar(
-            id,
-            req.user.sub
-        );
+        return this.publicacionesService.eliminar(id, req.user.sub);
     }
 
     @Post(':id/like')
@@ -87,10 +68,7 @@ export class PublicacionesController {
         @Param('id') id: string,
         @Req() req: Request & { user: { sub: string } }
     ) {
-        return this.publicacionesService.darLike(
-            id,
-            req.user.sub
-        );
+        return this.publicacionesService.darLike(id, req.user.sub);
     }
 
     @Delete('/:id/like')
@@ -99,9 +77,6 @@ export class PublicacionesController {
         @Param('id') id: string,
         @Req() req: Request & { user: { sub: string } }
     ) {
-        return this.publicacionesService.quitarLike(
-            id,
-            req.user.sub
-        );
+        return this.publicacionesService.quitarLike(id, req.user.sub);
     }
 }

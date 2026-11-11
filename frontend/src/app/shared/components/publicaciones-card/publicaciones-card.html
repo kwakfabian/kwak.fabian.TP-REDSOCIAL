@@ -11,7 +11,7 @@
         @if (publicacion().imagenUrl) {
             <img
                 class="publicacion-imagen"
-                [src]="'http://localhost:3100' + publicacion().imagenUrl"
+                [src]="obtenerUrlImagen(publicacion().imagenUrl)"
                 [alt]="publicacion().titulo"
             >
         }
