@@ -41,7 +41,7 @@
             @for (publicacion of publicaciones(); track publicacion._id) {
                 <app-publicaciones-card
                     [publicacion]="publicacion"
-                    (publicacionEliminada)="publicacionEliminada($event)"
+                    (publicacionEliminada)="publicacionEliminada()"
                 />
 
             }
