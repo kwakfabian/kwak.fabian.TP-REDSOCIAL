@@ -11,22 +11,10 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }),
-  );
-
-  app.enableCors({
-    origin: process.env.FRONTEND_ORIGIN ?? 'http://localhost:4200',
-  });
-
-  app.useStaticAssets(join(process.cwd(), 'uploads'), {
-    prefix: '/uploads/',
-  });
-
-  await app.listen(process.env.PORT ?? 3100);
+    new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true,}),);
+  app.enableCors();
+  app.useStaticAssets(join(process.cwd(), 'uploads'), {prefix: '/uploads/',});
+    await app.listen(process.env.PORT ?? 3100);
 }
 
 bootstrap();
