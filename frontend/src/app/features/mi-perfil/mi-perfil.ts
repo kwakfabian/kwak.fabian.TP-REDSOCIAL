@@ -27,6 +27,18 @@ export class MiPerfil {
     });
   }
 
+  obtenerUrlImagen(ruta: string): string {
+    if (!ruta) {
+      return '';
+    }
+
+    if (ruta.startsWith('http://') || ruta.startsWith('https://')) {
+      return ruta;
+    }
+
+    return `http://localhost:3100/${ruta.replace(/^\/+/, '')}`;
+  }
+
   cargarPublicaciones(usuarioId: string) {
     this.cargandoPublicaciones.set(true);
     this.errorPublicaciones.set('');

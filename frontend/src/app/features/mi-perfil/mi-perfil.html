@@ -8,7 +8,10 @@
 
       <div class="perfil-imagen">
         @if (usuario.imagenPerfil) {
-          <img [src]="usuario.imagenPerfil" alt="Foto de perfil">
+          <img
+            [src]="obtenerUrlImagen(usuario.imagenPerfil)"
+            alt="Foto de perfil"
+          >
         } @else {
           <p>Sin foto de perfil</p>
         }
@@ -48,7 +51,7 @@
 
             @if (publicacion.imagenUrl) {
               <img
-                [src]="publicacion.imagenUrl"
+                [src]="obtenerUrlImagen(publicacion.imagenUrl)"
                 alt="Imagen de la publicación"
               >
             }

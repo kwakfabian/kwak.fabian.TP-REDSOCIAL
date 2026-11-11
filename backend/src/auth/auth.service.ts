@@ -1,10 +1,16 @@
-import { BadRequestException, ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { Model, mongo } from 'mongoose';
 import { Usuario } from './usuario.schema.js';
 import { CredencialesDto } from './credenciales.dto.js';
 import { RegistroDto } from './registro.dto.js';
+import { ImagenesService } from './imagenes.service.js';
 
 import * as bcrypt from 'bcrypt';
 
@@ -14,23 +20,32 @@ export class AuthService {
     @InjectModel(Usuario.name)
     private readonly usuarios: Model<Usuario>,
     private readonly jwt: JwtService,
+    private readonly imagenes: ImagenesService,
   ) {}
 
-  async registrar(datos: RegistroDto, imagenPerfil: string) {
+  async registrar(datos: RegistroDto, imagen?: Express.Multer.File) {
     if (datos.password !== datos.repetirPassword) {
       throw new BadRequestException('Las contraseñas no coinciden');
     }
 
+    let subida: { url: string; publicId: string } | undefined;
+
     try {
+      const passwordHash = await bcrypt.hash(datos.password, 10);
+
+      if (imagen) {
+        subida = await this.imagenes.subirPerfil(imagen);
+      }
+
       const usuario = await this.usuarios.create({
         email: datos.email,
         nombre: datos.nombre,
         apellido: datos.apellido,
         nombreUsuario: datos.nombreUsuario,
-        passwordHash: await bcrypt.hash(datos.password, 10),
+        passwordHash,
         fechaNacimiento: new Date(datos.fechaNacimiento),
         descripcionBreve: datos.descripcionBreve,
-        imagenPerfil,
+        imagenPerfil: subida?.url ?? '',
         perfil: 'usuario',
       });
 
@@ -39,11 +54,16 @@ export class AuthService {
         usuario: await this.perfil(usuario.id as string),
       };
     } catch (error) {
+      if (subida) {
+        await this.imagenes.eliminar(subida.publicId);
+      }
+
       if (error instanceof mongo.MongoServerError && error.code === 11000) {
         throw new ConflictException(
           'El email o nombre de usuario ya está registrado',
         );
       }
+
       throw error;
     }
   }
