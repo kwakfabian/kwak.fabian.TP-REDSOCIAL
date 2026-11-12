@@ -22,7 +22,7 @@
         <p><strong>Apellido:</strong> {{ usuario.apellido }}</p>
         <p><strong>Correo:</strong> {{ usuario.email }}</p>
         <p><strong>Nombre de usuario:</strong> {{ usuario.nombreUsuario }}</p>
-        <p><strong>Fecha de nacimiento:</strong> {{ usuario.fechaNacimiento }}</p>
+        <p><strong>Fecha de nacimiento:</strong> {{ usuario.fechaNacimiento | date:'dd/MM/yyyy' }}</p>
         <p><strong>Descripción:</strong> {{ usuario.descripcionBreve }}</p>
         <p><strong>Perfil:</strong> {{ usuario.perfil }}</p>
       </div>

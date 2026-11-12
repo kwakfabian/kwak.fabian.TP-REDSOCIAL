@@ -1,9 +1,10 @@
 import { Component, inject, signal, effect } from '@angular/core';
 import { AuthService } from '../../core/service/auth.service';
 import { Publicacion, PublicacionesService } from '../../core/service/publicaciones.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
-  imports: [],
+  imports: [DatePipe],
   selector: 'app-mi-perfil',
   styleUrl: './mi-perfil.css',
   templateUrl: './mi-perfil.html',

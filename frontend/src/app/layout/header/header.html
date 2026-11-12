@@ -1,18 +1,20 @@
 <header>
     <a class="logo" routerLink="/publicaciones">KwakSocial</a>
 
-    <nav>
-        <a routerLink="/publicaciones" routerLinkActive="active">Publicaciones</a>
-        <a routerLink="/mi-perfil" routerLinkActive="active">Mi Perfil</a>
+    @if (!router.isActive('/login', false) && !router.isActive('/register', false)) {
+        <nav>
+            <a routerLink="/publicaciones" routerLinkActive="active">Publicaciones</a>
+            <a routerLink="/mi-perfil" routerLinkActive="active">Mi Perfil</a>
 
-        <button
-            type="button"
-            class="boton-cerrar-sesion"
-            (click)="modalCerrarSesion.showModal()"
-        >
-            Cerrar Sesión
-        </button>
-    </nav>
+            <button
+                type="button"
+                class="boton-cerrar-sesion"
+                (click)="modalCerrarSesion.showModal()"
+            >
+                Cerrar Sesión
+            </button>
+        </nav>
+    }
 </header>
 
 <dialog
@@ -21,7 +23,9 @@
     aria-label="Confirmar cierre de sesión"
 >
     <h2>Cerrar sesión</h2>
+
     <p>¿Estás seguro de que querés cerrar sesión?</p>
+
     <div class="modal-botones">
 
         <button

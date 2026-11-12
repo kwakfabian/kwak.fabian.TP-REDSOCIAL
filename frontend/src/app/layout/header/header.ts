@@ -11,7 +11,7 @@ import { AuthService } from '../../core/service/auth.service';
 export class Header {
 
     private authService = inject(AuthService);
-    private router = inject(Router);
+    public router = inject(Router);
 
     cerrarSesion() {
         this.authService.signOut();
