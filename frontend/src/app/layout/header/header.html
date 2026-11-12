@@ -1,7 +1,7 @@
 <header>
     <a class="logo" routerLink="/publicaciones">KwakSocial</a>
 
-    @if (!router.isActive('/login', false) && !router.isActive('/register', false)) {
+    @if (mostrarNavegacion()) {
         <nav>
             <a routerLink="/publicaciones" routerLinkActive="active">Publicaciones</a>
             <a routerLink="/mi-perfil" routerLinkActive="active">Mi Perfil</a>

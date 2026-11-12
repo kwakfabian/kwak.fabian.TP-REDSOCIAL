@@ -99,7 +99,6 @@ export class ImagenesService {
         resource_type: 'image',
       });
     } catch {
-      // No ocultar el error original del registro.
     }
   }
 }

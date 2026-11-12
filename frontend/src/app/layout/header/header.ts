@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, computed, inject } from '@angular/core';
+import { isActive, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/service/auth.service';
 
 @Component({
@@ -12,6 +12,13 @@ export class Header {
 
     private authService = inject(AuthService);
     public router = inject(Router);
+
+    esLogin = isActive('/login', this.router);
+    esRegister = isActive('/register', this.router);
+
+    mostrarNavegacion = computed(() => {
+        return this.router.lastSuccessfulNavigation() !== null && !this.esLogin() && !this.esRegister();
+    });
 
     cerrarSesion() {
         this.authService.signOut();
