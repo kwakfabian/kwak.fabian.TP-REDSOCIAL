@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { Model, mongo } from 'mongoose';
@@ -11,7 +6,6 @@ import { Usuario } from './usuario.schema.js';
 import { CredencialesDto } from './credenciales.dto.js';
 import { RegistroDto } from './registro.dto.js';
 import { ImagenesService } from './imagenes.service.js';
-
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -31,8 +25,6 @@ export class AuthService {
     let subida: { url: string; publicId: string } | undefined;
 
     try {
-      const passwordHash = await bcrypt.hash(datos.password, 10);
-
       if (imagen) {
         subida = await this.imagenes.subirPerfil(imagen);
       }
@@ -42,17 +34,14 @@ export class AuthService {
         nombre: datos.nombre,
         apellido: datos.apellido,
         nombreUsuario: datos.nombreUsuario,
-        passwordHash,
+        passwordHash: await bcrypt.hash(datos.password, 10),
         fechaNacimiento: new Date(datos.fechaNacimiento),
         descripcionBreve: datos.descripcionBreve,
         imagenPerfil: subida?.url ?? '',
         perfil: 'usuario',
       });
 
-      return {
-        ...(await this.token(usuario.id as string, usuario.email)),
-        usuario: await this.perfil(usuario.id as string),
-      };
+      return this.token(usuario.id as string, usuario.email);
     } catch (error) {
       if (subida) {
         await this.imagenes.eliminar(subida.publicId);

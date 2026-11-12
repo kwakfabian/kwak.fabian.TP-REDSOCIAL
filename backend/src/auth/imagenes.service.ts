@@ -1,9 +1,4 @@
-import {
-  BadGatewayException,
-  BadRequestException,
-  Injectable,
-  ServiceUnavailableException,
-} from '@nestjs/common';
+import { BadGatewayException, BadRequestException, Injectable, ServiceUnavailableException } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
 import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
@@ -12,22 +7,11 @@ import sharp from 'sharp';
 export class ImagenesService {
 
   private opciones() {
-    const {
-      CLOUDINARY_CLOUD_NAME,
-      CLOUDINARY_API_KEY,
-      CLOUDINARY_API_SECRET,
-    } = process.env;
+    const { CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } = process.env;
 
-    if (
-      !CLOUDINARY_CLOUD_NAME ||
-      !CLOUDINARY_API_KEY ||
-      !CLOUDINARY_API_SECRET
-    ) {
-      throw new ServiceUnavailableException(
-        'Falta configurar Cloudinary',
-      );
+    if ( !CLOUDINARY_CLOUD_NAME || !CLOUDINARY_API_KEY || !CLOUDINARY_API_SECRET ) {
+      throw new ServiceUnavailableException('Falta configurar Cloudinary' );
     }
-
     return {
       cloud_name: CLOUDINARY_CLOUD_NAME,
       api_key: CLOUDINARY_API_KEY,
@@ -36,21 +20,15 @@ export class ImagenesService {
     };
   }
 
-  async subirPerfil(
-    archivo: Express.Multer.File,
-  ): Promise<{ url: string; publicId: string }> {
+  async subirPerfil( archivo: Express.Multer.File ): Promise<{ url: string; publicId: string }> {
 
     if (!archivo.buffer?.length || archivo.size > 5 * 1024 * 1024) {
       throw new BadRequestException('Imagen inválida o demasiado grande');
     }
-
     let buffer: Buffer;
 
     try {
-      buffer = await sharp(archivo.buffer, {
-        limitInputPixels: 20_000_000,
-        failOn: 'warning',
-      })
+      buffer = await sharp(archivo.buffer, { limitInputPixels: 20_000_000, failOn: 'warning' })
         .rotate()
         .resize(800, 800, {
           fit: 'inside',
