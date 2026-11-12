@@ -1,13 +1,8 @@
 <article class="publicacion-card">
-
     <div class="publicacion-contenido">
 
         <h2>{{ publicacion().titulo }}</h2>
-
-        <p class="descripcion">
-            {{ publicacion().descripcion }}
-        </p>
-
+        <p class="descripcion">{{ publicacion().descripcion }}</p>
         @if (publicacion().imagenUrl) {
             <img
                 class="publicacion-imagen"
@@ -17,7 +12,6 @@
         }
 
         <div class="publicacion-info">
-
             <button
                 type="button"
                 class="boton-like"
@@ -33,10 +27,7 @@
             </button>
 
             <span>{{ totalLikes() }} likes</span>
-
-            <span>
-                {{ publicacion().createdAt | date:'dd/MM/yyyy HH:mm' }}
-            </span>
+            <span>{{ publicacion().createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
 
             @if (esPropietario() || esAdministrador()) {
                 <button
@@ -52,17 +43,13 @@
                     }
                 </button>
             }
-
         </div>
 
         @if (mensajeError()) {
-            <p class="mensaje-error">
-                {{ mensajeError() }}
-            </p>
+            <p class="mensaje-error">{{ mensajeError() }}</p>
         }
 
     </div>
-
 </article>
 
 <dialog
@@ -71,11 +58,9 @@
     aria-label="Confirmar eliminación de publicación"
 >
     <h2>Eliminar publicación</h2>
-
     <p>¿Estás seguro de que querés eliminar esta publicación?</p>
-
+    
     <div class="modal-botones">
-
         <button
             type="button"
             class="boton-cancelar"

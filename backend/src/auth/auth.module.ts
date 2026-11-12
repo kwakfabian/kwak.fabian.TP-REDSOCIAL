@@ -9,13 +9,8 @@ import { ImagenesService } from './imagenes.service.js';
 import { Usuario, UsuarioSchema } from './usuario.schema.js';
 
 @Module({
-  imports: [
-    PassportModule,
-    MongooseModule.forFeature([
-      { name: Usuario.name, schema: UsuarioSchema },
-    ]),
-    JwtModule.registerAsync({
-      useFactory: () => ({
+  imports: [ PassportModule, MongooseModule.forFeature([ { name: Usuario.name, schema: UsuarioSchema } ]),
+    JwtModule.registerAsync({ useFactory: () => ({
         secret: process.env.JWT_SECRET,
         signOptions: { expiresIn: '1h' },
       }),
