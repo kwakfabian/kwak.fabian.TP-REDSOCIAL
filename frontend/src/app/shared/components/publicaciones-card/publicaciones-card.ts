@@ -96,10 +96,6 @@ export class PublicacionesCard {
     eliminarPublicacion() {
         if ((!this.esPropietario() && !this.esAdministrador()) || this.eliminando() || this.procesandoLike()) return;
 
-        const confirmar = window.confirm('¿Estás seguro de que querés eliminar esta publicación?');
-
-        if (!confirmar) return;
-
         this.eliminando.set(true);
         this.mensajeError.set('');
 

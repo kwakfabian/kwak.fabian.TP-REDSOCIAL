@@ -17,11 +17,13 @@ header {
     z-index: 1000;
 
     font-family: Arial, Helvetica, sans-serif;
+
+    text-decoration: none;
 }
 
 /* LOGO */
 
-header h2 {
+.logo {
     margin: 0;
 
     color: #008cff;
@@ -40,7 +42,8 @@ header nav {
     gap: 12px;
 }
 
-header nav a {
+header nav a,
+header nav .boton-cerrar-sesion {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -48,12 +51,14 @@ header nav a {
     padding: 11px 17px;
 
     color: #aaaaaa;
+    font-family: inherit;
     font-size: 14px;
     font-weight: 600;
     text-decoration: none;
 
     border-radius: 8px;
 
+    cursor: pointer;
     transition: background-color 0.2s, color 0.2s;
 }
 
@@ -71,17 +76,108 @@ header nav a.active {
 
 /* CERRAR SESION */
 
-header nav a:last-child {
+header nav .boton-cerrar-sesion {
     margin-left: 12px;
 
+    background-color: transparent;
     border: 1px solid #333333;
     color: #cccccc;
 }
 
-header nav a:last-child:hover {
+header nav .boton-cerrar-sesion:hover {
     background-color: rgba(255, 70, 70, 0.08);
     border-color: rgba(255, 70, 70, 0.35);
     color: #ff7777;
+}
+
+/* MODAL CERRAR SESION */
+
+.modal-cerrar-sesion {
+    width: calc(100% - 32px);
+    max-width: 440px;
+    max-height: calc(100dvh - 32px);
+    margin: auto;
+    padding: 28px;
+    box-sizing: border-box;
+
+    background-color: #111111;
+    border: 1px solid #383838;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.modal-cerrar-sesion::backdrop {
+    background-color: rgba(0, 0, 0, 0.75);
+}
+
+.modal-cerrar-sesion h2 {
+    margin: 0 0 14px;
+
+    font-size: 21px;
+    line-height: 1.4;
+}
+
+.modal-cerrar-sesion p {
+    margin: 0;
+
+    color: #bbbbbb;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.modal-botones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    margin-top: 25px;
+}
+
+.boton-cancelar,
+.boton-confirmar {
+    padding: 11px 18px;
+
+    border: 1px solid #383838;
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.boton-cancelar {
+    background-color: #1c1c1c;
+    color: #dddddd;
+}
+
+.boton-cancelar:hover {
+    background-color: #292929;
+    border-color: #555555;
+}
+
+.boton-confirmar {
+    background-color: #a52a2a;
+    border-color: #a52a2a;
+    color: #ffffff;
+}
+
+.boton-confirmar:hover {
+    background-color: #c33333;
+    border-color: #c33333;
+}
+
+.boton-cancelar:focus-visible,
+.boton-confirmar:focus-visible,
+.boton-cerrar-sesion:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 3px;
 }
 
 /* RESPONSIVE */
@@ -93,7 +189,7 @@ header nav a:last-child:hover {
         gap: 15px;
     }
 
-    header h2 {
+    .logo {
         font-size: 24px;
     }
 
@@ -103,20 +199,26 @@ header nav a:last-child:hover {
         gap: 5px;
     }
 
-    header nav a {
+    header nav a,
+    header nav .boton-cerrar-sesion {
         flex: 1;
         padding: 10px 8px;
         font-size: 12px;
         text-align: center;
     }
 
-    header nav a:last-child {
+    header nav .boton-cerrar-sesion {
         margin-left: 0;
+    }
+
+    .modal-cerrar-sesion {
+        padding: 22px;
     }
 }
 
 @media (max-width: 380px) {
-    header nav a {
+    header nav a,
+    header nav .boton-cerrar-sesion {
         padding: 10px 5px;
         font-size: 11px;
     }

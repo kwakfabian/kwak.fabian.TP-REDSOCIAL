@@ -1,9 +1,45 @@
 <header>
-    <h2>KwakSocial</h2>
+    <a class="logo" routerLink="/publicaciones">KwakSocial</a>
 
     <nav>
         <a routerLink="/publicaciones" routerLinkActive="active">Publicaciones</a>
         <a routerLink="/mi-perfil" routerLinkActive="active">Mi Perfil</a>
-        <a routerLink="/login" routerLinkActive="active">Cerrar Sesion</a>
+
+        <button
+            type="button"
+            class="boton-cerrar-sesion"
+            (click)="modalCerrarSesion.showModal()"
+        >
+            Cerrar Sesión
+        </button>
     </nav>
 </header>
+
+<dialog
+    #modalCerrarSesion
+    class="modal-cerrar-sesion"
+    aria-label="Confirmar cierre de sesión"
+>
+    <h2>Cerrar sesión</h2>
+    <p>¿Estás seguro de que querés cerrar sesión?</p>
+    <div class="modal-botones">
+
+        <button
+            type="button"
+            class="boton-cancelar"
+            autofocus
+            (click)="modalCerrarSesion.close()"
+        >
+            Cancelar
+        </button>
+
+        <button
+            type="button"
+            class="boton-confirmar"
+            (click)="modalCerrarSesion.close(); cerrarSesion()"
+        >
+            Cerrar sesión
+        </button>
+
+    </div>
+</dialog>

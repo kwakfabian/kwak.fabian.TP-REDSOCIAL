@@ -43,7 +43,7 @@
                     type="button"
                     class="boton-eliminar"
                     [disabled]="eliminando() || procesandoLike()"
-                    (click)="eliminarPublicacion()"
+                    (click)="modalEliminar.showModal()"
                 >
                     @if (eliminando()) {
                         Eliminando...
@@ -64,3 +64,35 @@
     </div>
 
 </article>
+
+<dialog
+    #modalEliminar
+    class="modal-eliminar"
+    aria-label="Confirmar eliminación de publicación"
+>
+    <h2>Eliminar publicación</h2>
+
+    <p>¿Estás seguro de que querés eliminar esta publicación?</p>
+
+    <div class="modal-botones">
+
+        <button
+            type="button"
+            class="boton-cancelar"
+            autofocus
+            (click)="modalEliminar.close()"
+        >
+            Cancelar
+        </button>
+
+        <button
+            type="button"
+            class="boton-confirmar"
+            [disabled]="eliminando() || procesandoLike()"
+            (click)="modalEliminar.close(); eliminarPublicacion()"
+        >
+            Eliminar
+        </button>
+
+    </div>
+</dialog>
