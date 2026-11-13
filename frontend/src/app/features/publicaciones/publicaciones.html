@@ -26,11 +26,25 @@
         </div>
     </div>
 
+    <div class="crear-publicacion">
+        <button
+            type="button"
+            class="boton-publicar"
+            (click)="abrirModal(modalPublicacion, inputImagen)"
+        >
+            + Crear publicación
+        </button>
+    </div>
+
+    @if (successMessage()) {
+        <p class="mensaje-exito" role="status">{{ successMessage() }}</p>
+    }
+
     @if (cargando()) {
         <p>Cargando publicaciones...</p>
 
     } @else if (mensajeError()) {
-        <p class="mensaje-error">{{ mensajeError() }}</p>
+        <p class="mensaje-error" role="alert">{{ mensajeError() }}</p>
 
     } @else if (publicaciones().length === 0) {
         <p>Todavía no hay publicaciones.</p>
@@ -68,4 +82,119 @@
             </div>
         }
     }
+
+    <dialog
+        #modalPublicacion
+        class="modal-publicacion"
+        aria-labelledby="titulo-modal"
+        (cancel)="$event.preventDefault(); cerrarModal(modalPublicacion)"
+    >
+        <div class="encabezado-modal">
+            <h2 id="titulo-modal">Crear publicación</h2>
+
+            <button
+                type="button"
+                class="boton-cerrar"
+                aria-label="Cerrar modal"
+                [disabled]="isLoading()"
+                (click)="cerrarModal(modalPublicacion)"
+            >
+                ×
+            </button>
+        </div>
+
+        <form [formGroup]="publicacionForm" (ngSubmit)="onSubmit(modalPublicacion)">
+
+            <div class="campo">
+                <label for="titulo">Título</label>
+
+                <input
+                    id="titulo"
+                    type="text"
+                    formControlName="titulo"
+                    placeholder="Escribí un título"
+                    [readOnly]="isLoading()"
+                    autofocus
+                >
+
+                @if (publicacionForm.get('titulo')?.touched && publicacionForm.get('titulo')?.invalid) {
+                    <small class="error-campo">
+                        El título es obligatorio y no puede contener solo espacios.
+                    </small>
+                }
+            </div>
+
+            <div class="campo">
+                <label for="descripcion">Mensaje</label>
+
+                <textarea
+                    id="descripcion"
+                    formControlName="descripcion"
+                    placeholder="¿Qué querés compartir?"
+                    rows="5"
+                    [readOnly]="isLoading()"
+                ></textarea>
+
+                @if (publicacionForm.get('descripcion')?.touched && publicacionForm.get('descripcion')?.invalid) {
+                    <small class="error-campo">
+                        El mensaje es obligatorio y no puede contener solo espacios.
+                    </small>
+                }
+            </div>
+
+            <div class="campo">
+                <label for="imagen">Imagen (opcional)</label>
+
+                <input
+                    #inputImagen
+                    id="imagen"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    [disabled]="isLoading()"
+                    (change)="seleccionarImagen($event)"
+                >
+
+                <small class="ayuda-campo">Podés subir una imagen JPG, PNG o WebP.</small>
+
+                @if (imagenPublicacion()) {
+                    <div class="imagen-seleccionada">
+                        <span>{{ imagenPublicacion()?.name }}</span>
+
+                        <button
+                            type="button"
+                            [disabled]="isLoading()"
+                            (click)="quitarImagen(inputImagen)"
+                        >
+                            Quitar imagen
+                        </button>
+                    </div>
+                }
+            </div>
+
+            @if (errorMessage()) {
+                <p class="error-modal" role="alert">{{ errorMessage() }}</p>
+            }
+
+            <div class="acciones-modal">
+                <button
+                    type="button"
+                    class="boton-cancelar"
+                    [disabled]="isLoading()"
+                    (click)="cerrarModal(modalPublicacion)"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="submit"
+                    class="boton-publicar"
+                    [disabled]="isLoading()"
+                >
+                    {{ isLoading() ? 'Publicando...' : 'Publicar' }}
+                </button>
+            </div>
+
+        </form>
+    </dialog>
+
 </section>

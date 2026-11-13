@@ -1,0 +1,281 @@
+.seccion-detalle {
+    width: 90%;
+    max-width: 900px;
+    margin: 40px auto 70px;
+
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.volver {
+    display: inline-block;
+    margin-bottom: 25px;
+
+    color: #55b5ff;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.volver:hover {
+    text-decoration: underline;
+}
+
+app-publicaciones-card {
+    display: block;
+    width: 100%;
+}
+
+.seccion-comentarios {
+    margin-top: 30px;
+    padding: 25px;
+
+    background-color: #111111;
+    border: 1px solid #292929;
+    border-radius: 12px;
+}
+
+.seccion-comentarios h2 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    margin: 0 0 25px;
+    font-size: 22px;
+}
+
+.seccion-comentarios h2 span {
+    padding: 4px 9px;
+
+    background-color: #242424;
+    border-radius: 6px;
+
+    color: #aaaaaa;
+    font-size: 13px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+label {
+    color: #cccccc;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+textarea {
+    width: 100%;
+    padding: 12px 14px;
+    box-sizing: border-box;
+    resize: vertical;
+
+    background-color: #181818;
+    border: 1px solid #333333;
+    border-radius: 8px;
+
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+textarea:focus {
+    outline: 2px solid rgba(0, 140, 255, 0.35);
+    outline-offset: 2px;
+    border-color: #008cff;
+}
+
+.acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    margin-top: 5px;
+}
+
+button {
+    padding: 10px 16px;
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.boton-principal {
+    background-color: #008cff;
+    border: 1px solid #008cff;
+    color: #ffffff;
+}
+
+.boton-principal:hover:not(:disabled) {
+    background-color: #0075d6;
+}
+
+.boton-secundario,
+.boton-cargar {
+    background-color: #242424;
+    border: 1px solid #333333;
+    color: #dddddd;
+}
+
+.boton-secundario:hover:not(:disabled),
+.boton-cargar:hover:not(:disabled) {
+    background-color: #333333;
+}
+
+.boton-cargar {
+    display: block;
+    margin: 25px auto 0;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+button:focus-visible,
+.volver:focus-visible {
+    outline: 2px solid #55b5ff;
+    outline-offset: 3px;
+}
+
+.lista-comentarios {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    margin-top: 30px;
+}
+
+.comentario {
+    padding: 18px;
+
+    background-color: #181818;
+    border: 1px solid #292929;
+    border-radius: 10px;
+}
+
+.comentario-encabezado {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.autor {
+    color: #55b5ff;
+    font-size: 13px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.fecha,
+.editado {
+    color: #999999;
+    font-size: 12px;
+}
+
+.comentario-mensaje {
+    margin: 14px 0;
+
+    color: #dddddd;
+    font-size: 14px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.comentario-acciones {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.boton-editar {
+    padding: 5px 0;
+
+    background: none;
+    border: 0;
+    color: #55b5ff;
+}
+
+.boton-editar:hover:not(:disabled) {
+    text-decoration: underline;
+}
+
+.estado {
+    margin: 25px 0;
+    color: #999999;
+    font-size: 14px;
+    text-align: center;
+}
+
+.error-campo {
+    color: #ff7777;
+    font-size: 12px;
+}
+
+.mensaje-error {
+    padding: 12px 15px;
+
+    background-color: rgba(255, 70, 70, 0.08);
+    border: 1px solid rgba(255, 70, 70, 0.25);
+    border-radius: 8px;
+
+    color: #ff7777;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.modal-editar {
+    width: 90%;
+    max-width: 500px;
+    max-height: 90dvh;
+    margin: auto;
+    padding: 25px;
+    box-sizing: border-box;
+    overflow-y: auto;
+
+    background-color: #151515;
+    border: 1px solid #333333;
+    border-radius: 12px;
+
+    color: #ffffff;
+    font-family: inherit;
+}
+
+.modal-editar::backdrop {
+    background-color: rgba(0, 0, 0, 0.75);
+}
+
+.modal-editar h2 {
+    margin: 0 0 25px;
+    font-size: 22px;
+}
+
+@media (max-width: 650px) {
+    .seccion-detalle {
+        width: 92%;
+        margin: 25px auto 50px;
+    }
+
+    .seccion-comentarios {
+        padding: 18px;
+    }
+
+    .comentario {
+        padding: 15px;
+    }
+
+    .modal-editar {
+        padding: 20px;
+    }
+}

@@ -74,10 +74,10 @@ export class AuthService {
         const token = this.accesToken();
 
         const headers = new HttpHeaders({
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token ?? ''}`
         });
 
-        return this.http.get<Usuario>(this.url + '/me', { headers }).pipe(
+        return this.http.post<Usuario>(this.url + '/autorizar', {}, { headers }).pipe(
             tap((perfil) => {
                 this.currentUser.set(perfil);
                 this.currentUserData.set(perfil);
@@ -86,7 +86,10 @@ export class AuthService {
     }
 
     restaurarSesion() {
-        if (!this.accesToken()) return of(null);
+        if (!this.accesToken()) {
+            this.signOut();
+            return of(null);
+        }
 
         return this.cargarPerfil().pipe(
             catchError(() => {

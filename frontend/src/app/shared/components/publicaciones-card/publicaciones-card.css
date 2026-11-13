@@ -322,3 +322,31 @@
         margin-left: auto;
     }
 }
+
+.boton-comentarios {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 12px;
+
+    background-color: rgba(0, 140, 255, 0.08);
+    border: 1px solid rgba(0, 140, 255, 0.3);
+    border-radius: 8px;
+
+    color: #55b5ff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.boton-comentarios:hover {
+    background-color: rgba(0, 140, 255, 0.16);
+    border-color: #008cff;
+}
+
+.boton-comentarios:focus-visible {
+    outline: 2px solid #55b5ff;
+    outline-offset: 3px;
+}

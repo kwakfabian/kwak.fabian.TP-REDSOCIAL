@@ -3,6 +3,7 @@
 
         <h2>{{ publicacion().titulo }}</h2>
         <p class="descripcion">{{ publicacion().descripcion }}</p>
+
         @if (publicacion().imagenUrl) {
             <img
                 class="publicacion-imagen"
@@ -28,6 +29,15 @@
 
             <span>{{ totalLikes() }} likes</span>
             <span>{{ publicacion().createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+
+            @if (mostrarComentarios()) {
+                <a
+                    class="boton-comentarios"
+                    [routerLink]="['/publicaciones', publicacion()._id]"
+                >
+                    Ver comentarios
+                </a>
+            }
 
             @if (esPropietario() || esAdministrador()) {
                 <button
@@ -59,7 +69,7 @@
 >
     <h2>Eliminar publicación</h2>
     <p>¿Estás seguro de que querés eliminar esta publicación?</p>
-    
+
     <div class="modal-botones">
         <button
             type="button"
@@ -78,6 +88,5 @@
         >
             Eliminar
         </button>
-
     </div>
 </dialog>

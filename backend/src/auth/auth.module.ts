@@ -12,7 +12,7 @@ import { Usuario, UsuarioSchema } from './usuario.schema.js';
   imports: [ PassportModule, MongooseModule.forFeature([ { name: Usuario.name, schema: UsuarioSchema } ]),
     JwtModule.registerAsync({ useFactory: () => ({
         secret: process.env.JWT_SECRET,
-        signOptions: { expiresIn: '1h' },
+        signOptions: { expiresIn: '15m', algorithm: 'HS256' },
       }),
     }),
   ],

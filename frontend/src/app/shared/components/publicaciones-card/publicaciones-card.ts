@@ -1,11 +1,12 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { Publicacion, PublicacionesService } from '../../../core/service/publicaciones.service';
 import { AuthService } from '../../../core/service/auth.service';
 
 @Component({
     selector: 'app-publicaciones-card',
-    imports: [DatePipe],
+    imports: [DatePipe, RouterLink],
     templateUrl: './publicaciones-card.html',
     styleUrl: './publicaciones-card.css'
 })
@@ -15,6 +16,7 @@ export class PublicacionesCard {
     private authService = inject(AuthService);
 
     publicacion = input.required<Publicacion>();
+    mostrarComentarios = input(true);
     publicacionEliminada = output<string>();
 
     procesandoLike = signal(false);

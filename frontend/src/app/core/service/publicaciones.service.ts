@@ -20,14 +20,14 @@ export interface RespuestaPublicaciones {
     publicaciones: Publicacion[];
     total: number;
     offset: number;
-    limit: number
+    limit: number;
 }
 
 @Injectable({
     providedIn: 'root'
 })
-
 export class PublicacionesService {
+
     private http = inject(HttpClient);
     private apiUrl = `${environment.apiUrl}/publicaciones`;
 
@@ -37,7 +37,7 @@ export class PublicacionesService {
         limit: number = 10,
         usuarioId?: string
     ): Observable<RespuestaPublicaciones> {
-        
+
         let params = new HttpParams()
             .set('orden', orden)
             .set('offset', offset.toString())
@@ -45,16 +45,22 @@ export class PublicacionesService {
 
         if (usuarioId) {
             params = params.set('usuarioId', usuarioId);
-        };
+        }
 
         return this.http.get<RespuestaPublicaciones>(
-            this.apiUrl, 
+            this.apiUrl,
             { params }
         );
     }
 
-    crear(titulo: string, descripcion: string, imagen?: File): Observable<Publicacion> {
+    obtenerPorId(id: string): Observable<Publicacion> {
+        return this.http.get<Publicacion>(
+            `${this.apiUrl}/${id}`,
+            { headers: this.obtenerHeader() }
+        );
+    }
 
+    crear(titulo: string, descripcion: string, imagen?: File): Observable<Publicacion> {
         const formData = new FormData();
 
         formData.append('titulo', titulo);
@@ -72,14 +78,14 @@ export class PublicacionesService {
     }
 
     eliminar(id: string): Observable<{ mensaje: string }> {
-        return this.http.delete<{ mensaje: string }> (
+        return this.http.delete<{ mensaje: string }>(
             `${this.apiUrl}/${id}`,
             { headers: this.obtenerHeader() }
         );
     }
 
     darLike(id: string): Observable<{ mensaje: string, cantidadLikes: number }> {
-        return this.http.post<{mensaje:string, cantidadLikes: number}> (
+        return this.http.post<{ mensaje: string, cantidadLikes: number }>(
             `${this.apiUrl}/${id}/like`,
             {},
             { headers: this.obtenerHeader() }
@@ -87,7 +93,7 @@ export class PublicacionesService {
     }
 
     quitarLike(id: string): Observable<{ mensaje: string, cantidadLikes: number }> {
-        return this.http.delete<{mensaje:string, cantidadLikes: number}> (
+        return this.http.delete<{ mensaje: string, cantidadLikes: number }>(
             `${this.apiUrl}/${id}/like`,
             { headers: this.obtenerHeader() }
         );

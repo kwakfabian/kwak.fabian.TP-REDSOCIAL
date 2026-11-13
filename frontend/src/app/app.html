@@ -1,7 +1,11 @@
-<app-header></app-header>
+@if (cargando()) {
+    <app-cargando></app-cargando>
+} @else {
+    <app-header></app-header>
 
-<main>
-  <router-outlet></router-outlet>
-</main>
+    <main>
+        <router-outlet></router-outlet>
+    </main>
 
-<app-footer></app-footer>
+    <app-footer></app-footer>
+}

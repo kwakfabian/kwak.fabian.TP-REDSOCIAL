@@ -1,0 +1,174 @@
+<section class="seccion-detalle">
+
+    <a class="volver" routerLink="/publicaciones">← Volver a publicaciones</a>
+
+    @if (cargando()) {
+        <p class="estado">Cargando publicación...</p>
+
+    } @else if (mensajeError()) {
+        <p class="mensaje-error" role="alert">{{ mensajeError() }}</p>
+
+    } @else if (publicacion(); as datos) {
+        <app-publicaciones-card
+            [publicacion]="datos"
+            [mostrarComentarios]="false"
+            (publicacionEliminada)="publicacionEliminada()"
+        />
+
+        <div class="seccion-comentarios">
+            <h2>Comentarios <span>{{ totalComentarios() }}</span></h2>
+
+            <form [formGroup]="comentarioForm" (ngSubmit)="onSubmit()">
+                <label for="nuevo-comentario">Escribí un comentario</label>
+
+                <textarea
+                    id="nuevo-comentario"
+                    formControlName="mensaje"
+                    placeholder="¿Qué opinás de esta publicación?"
+                    rows="3"
+                    [readOnly]="isLoading()"
+                ></textarea>
+
+                @if (comentarioForm.get('mensaje')?.touched && comentarioForm.get('mensaje')?.invalid) {
+                    <small class="error-campo">
+                        El comentario es obligatorio y no puede contener solo espacios.
+                    </small>
+                }
+
+                @if (errorMessage()) {
+                    <p class="mensaje-error" role="alert">{{ errorMessage() }}</p>
+                }
+
+                <div class="acciones">
+                    <button
+                        type="submit"
+                        class="boton-principal"
+                        [disabled]="isLoading() || cargandoComentarios() || guardandoEdicion()"
+                    >
+                        {{ isLoading() ? 'Publicando...' : 'Comentar' }}
+                    </button>
+                </div>
+            </form>
+
+            <div class="lista-comentarios">
+                @for (comentario of comentarios(); track comentario._id) {
+                    <article class="comentario">
+                        <div class="comentario-encabezado">
+                            <span class="autor">
+                                @if (esPropietario(comentario)) {
+                                    Vos
+                                } @else {
+                                    Usuario {{ comentario.usuarioId }}
+                                }
+                            </span>
+
+                            <span class="fecha">
+                                {{ comentario.createdAt | date:'dd/MM/yyyy HH:mm' }}
+                            </span>
+                        </div>
+
+                        <p class="comentario-mensaje">{{ comentario.mensaje }}</p>
+
+                        <div class="comentario-acciones">
+                            @if (comentario.modificado) {
+                                <span class="editado">Editado</span>
+                            }
+
+                            @if (esPropietario(comentario)) {
+                                <button
+                                    type="button"
+                                    class="boton-editar"
+                                    [disabled]="isLoading() || guardandoEdicion()"
+                                    (click)="abrirEditar(comentario, modalEditar)"
+                                >
+                                    Editar
+                                </button>
+                            }
+                        </div>
+                    </article>
+                }
+            </div>
+
+            @if (cargandoComentarios()) {
+                <p class="estado" role="status">Cargando comentarios...</p>
+
+            } @else if (errorComentarios()) {
+                <p class="mensaje-error" role="alert">{{ errorComentarios() }}</p>
+
+                <button
+                    type="button"
+                    class="boton-secundario"
+                    [disabled]="isLoading() || guardandoEdicion()"
+                    (click)="cargarComentarios()"
+                >
+                    Reintentar
+                </button>
+
+            } @else if (comentarios().length === 0) {
+                <p class="estado">Todavía no hay comentarios.</p>
+            }
+
+            @if (!cargandoComentarios() && !errorComentarios() && offset < totalComentarios()) {
+                <button
+                    type="button"
+                    class="boton-cargar"
+                    [disabled]="isLoading() || guardandoEdicion()"
+                    (click)="cargarComentarios()"
+                >
+                    Cargar más
+                </button>
+            }
+        </div>
+    }
+
+    <dialog
+        #modalEditar
+        class="modal-editar"
+        aria-labelledby="titulo-editar"
+        (cancel)="$event.preventDefault(); cerrarEditar(modalEditar)"
+    >
+        <h2 id="titulo-editar">Editar comentario</h2>
+
+        <form [formGroup]="editarForm" (ngSubmit)="guardarEdicion(modalEditar)">
+            <label for="mensaje-editado">Mensaje</label>
+
+            <textarea
+                id="mensaje-editado"
+                formControlName="mensaje"
+                rows="5"
+                [readOnly]="guardandoEdicion()"
+                autofocus
+            ></textarea>
+
+            @if (editarForm.get('mensaje')?.touched && editarForm.get('mensaje')?.invalid) {
+                <small class="error-campo">
+                    El comentario es obligatorio y no puede contener solo espacios.
+                </small>
+            }
+
+            @if (errorEdicion()) {
+                <p class="mensaje-error" role="alert">{{ errorEdicion() }}</p>
+            }
+
+            <div class="acciones">
+                <button
+                    type="button"
+                    class="boton-secundario"
+                    [disabled]="guardandoEdicion()"
+                    (click)="cerrarEditar(modalEditar)"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="submit"
+                    class="boton-principal"
+                    [disabled]="guardandoEdicion()"
+                >
+                    {{ guardandoEdicion() ? 'Guardando...' : 'Guardar cambios' }}
+                </button>
+            </div>
+        </form>
+    </dialog>
+
+</section>

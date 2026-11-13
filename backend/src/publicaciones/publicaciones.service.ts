@@ -49,41 +49,34 @@ export class PublicacionesService {
     }
   }
 
-  async listar(
-    orden: string = 'fecha',
-    offset: number = 0,
-    limit: number = 10,
-    usuarioId?: string
-  ) {
-    const filtro: Record<string, unknown> = {
-      activa: true
-    };
+  async listar(orden: string = 'fecha', offset: number = 0, limit: number = 10, usuarioId?: string) {
+    const filtro: Record<string, unknown> = { activa: true };
 
     if(usuarioId) {
       if (!Types.ObjectId.isValid(usuarioId)) {
         throw new BadRequestException('ID de usuario invalido');
       }
       filtro.usuarioId = new Types.ObjectId(usuarioId);
-    };
-
-    if(!['fecha', 'likes'].includes(orden)) {
-      throw new BadRequestException('El orden debe ser de fecha o likes')
-    };
-
-    if(!Number.isInteger(offset) || offset < 0) {
-      throw new BadRequestException('Offset debe ser un numero entero o igual a 0')
-    };
-
-    if(!Number.isInteger(limit) || limit < 1 || limit > 100) {
-      throw new BadRequestException('El limite es de 0 o menor a 100')
     }
 
-    const ordenamiento = orden === 'likes' ? {cantidadLikes: -1, createdAt: -1}: {createdAt: -1};
+    if(!['fecha', 'likes'].includes(orden)) {
+      throw new BadRequestException('El orden debe ser de fecha o likes');
+    }
+
+    if(!Number.isInteger(offset) || offset < 0) {
+      throw new BadRequestException('Offset debe ser un numero entero mayor o igual a 0');
+    }
+
+    if(!Number.isInteger(limit) || limit < 1 || limit > 100) {
+      throw new BadRequestException('El limite debe ser un numero entero entre 1 y 100');
+    }
+
+    const ordenamiento = orden === 'likes' ? { cantidadLikes: -1, createdAt: -1 } : { createdAt: -1 };
 
     const publicaciones = await this.publicaciones.aggregate([
-      { $match: filtro},
+      { $match: filtro },
       { $addFields: {
-          cantidadLikes: {$size: '$likes'}
+          cantidadLikes: { $size: '$likes' }
         }
       },
       { $sort: ordenamiento as Record<string, 1 | -1> },
@@ -93,8 +86,28 @@ export class PublicacionesService {
 
     const total = await this.publicaciones.countDocuments(filtro);
 
-    return { publicaciones, total, offset, limit }
-  };
+    return { publicaciones, total, offset, limit };
+  }
+
+  async obtenerPorId(id: string) {
+    if(!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('ID de publicacion invalido');
+    }
+
+    const publicacion = await this.publicaciones.findOne({
+      _id: id,
+      activa: true
+    }).exec();
+
+    if(!publicacion) {
+      throw new NotFoundException('No existe la publicacion');
+    }
+
+    return {
+      ...publicacion.toObject(),
+      cantidadLikes: publicacion.likes.length
+    };
+  }
 
   async eliminar(id: string, usuarioId: string) {
     if(!Types.ObjectId.isValid(id)) {
@@ -122,11 +135,11 @@ export class PublicacionesService {
 
     await this.publicaciones.findOneAndUpdate(
       { _id: id, activa: true },
-      { $set: {activa: false } },
+      { $set: { activa: false } },
       { new: true }
     ).exec();
 
-    return { mensaje: 'Publicacion elimanada correctamente' };
+    return { mensaje: 'Publicacion eliminada correctamente' };
   }
 
   async darLike(id: string, usuarioId: string) {
@@ -135,7 +148,7 @@ export class PublicacionesService {
     }
 
     const publicacion = await this.publicaciones.findOneAndUpdate(
-      { _id: id, activa: true},
+      { _id: id, activa: true },
       {
         $addToSet: {
           likes: new Types.ObjectId(usuarioId)
@@ -147,6 +160,7 @@ export class PublicacionesService {
     if(!publicacion) {
       throw new NotFoundException('La publicacion no existe');
     }
+
     return {
       mensaje: 'Like registrado correctamente',
       cantidadLikes: publicacion.likes.length
@@ -154,7 +168,7 @@ export class PublicacionesService {
   }
 
   async quitarLike(id: string, usuarioId: string) {
-    if(!Types.ObjectId.isValid(usuarioId)) {
+    if(!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('ID de publicacion invalida');
     }
 
@@ -170,14 +184,15 @@ export class PublicacionesService {
         }
       },
       { new: true }
-    )
+    ).exec();
+
     if(!publicacion) {
-      throw new NotFoundException('La publicacion no existe o el usuario no dio like')
-    };
+      throw new NotFoundException('La publicacion no existe o el usuario no dio like');
+    }
 
     return {
       mensaje: 'Like eliminado correctamente',
       cantidadLikes: publicacion.likes.length
-    }
+    };
   }
 }

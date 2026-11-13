@@ -10,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
+
   constructor(
     @InjectModel(Usuario.name)
     private readonly usuarios: Model<Usuario>,
@@ -41,7 +42,7 @@ export class AuthService {
         perfil: 'usuario',
       });
 
-      return this.token(usuario.id as string, usuario.email);
+      return this.token(usuario.id as string, usuario.email, usuario.perfil);
     } catch (error) {
       if (subida) {
         await this.imagenes.eliminar(subida.publicId);
@@ -74,27 +75,30 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
-    const passwordValida = await bcrypt.compare(
-      datos.password,
-      usuario.passwordHash,
-    );
+    const passwordValida = await bcrypt.compare(datos.password, usuario.passwordHash);
 
     if (!passwordValida) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
     return {
-      ...(await this.token(usuario.id as string, usuario.email)),
+      ...(await this.token(usuario.id as string, usuario.email, usuario.perfil)),
       usuario: await this.perfil(usuario.id as string),
     };
   }
 
-  private async token(id: string, email: string) {
+  private async token(id: string, email: string, perfil: string) {
     return {
-      access_token: await this.jwt.signAsync({ sub: id, email }),
+      access_token: await this.jwt.signAsync({ sub: id, email, perfil }),
       token_type: 'Bearer',
-      expires_in: 3600,
+      expires_in: 900,
     };
+  }
+
+  async refrescar(datos: { sub: string; email: string; perfil: string }) {
+    await this.perfil(datos.sub);
+
+    return this.token(datos.sub, datos.email, datos.perfil);
   }
 
   async perfil(id: string) {

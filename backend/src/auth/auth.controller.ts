@@ -9,6 +9,7 @@ import { memoryStorage } from 'multer';
 
 @Controller('auth')
 export class AuthController {
+
   constructor(private readonly auth: AuthService) {}
 
   @Post('register')
@@ -17,17 +18,10 @@ export class AuthController {
       storage: memoryStorage(),
       limits: { fileSize: 5 * 1024 * 1024 },
       fileFilter: (req, file, callback) => {
-        if (
-          !['image/jpeg', 'image/png', 'image/webp'].includes(file.mimetype)
-        ) {
+        if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.mimetype)) {
           return callback(
-            new BadRequestException(
-              'Solo se permiten imágenes JPG, PNG o WEBP',
-            ),
-            false,
-          );
+            new BadRequestException('Solo se permiten imágenes JPG, PNG o WEBP'), false);
         }
-
         callback(null, true);
       },
     }),
@@ -49,5 +43,19 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   perfil(@Req() req: Request & { user: { sub: string } }) {
     return this.auth.perfil(req.user.sub);
+  }
+
+  @Post('autorizar')
+  @HttpCode(200)
+  @UseGuards(JwtAuthGuard)
+  autorizar(@Req() req: Request & { user: { sub: string } }) {
+    return this.auth.perfil(req.user.sub);
+  }
+
+  @Post('refrescar')
+  @HttpCode(200)
+  @UseGuards(JwtAuthGuard)
+  refrescar(@Req() req: Request & { user: { sub: string; email: string; perfil: string } }) {
+    return this.auth.refrescar(req.user);
   }
 }

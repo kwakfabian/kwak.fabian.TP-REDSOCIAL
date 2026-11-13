@@ -53,6 +53,14 @@ export class PublicacionesController {
         );
     }
 
+    @Get(':id')
+    @UseGuards(JwtAuthGuard)
+    obtenerPorId(
+        @Param('id') id: string
+    ) {
+        return this.publicacionesService.obtenerPorId(id);
+    }
+
     @Delete(':id')
     @UseGuards(JwtAuthGuard)
     eliminar(
