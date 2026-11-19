@@ -179,7 +179,7 @@ export class AuthService {
             return;
         }
 
-        if (segundos <= 120 && !this.avisoMostrado) {
+        if (segundos <= 60 && !this.avisoMostrado) {
             this.avisoMostrado = true;
             this.mostrarAvisoSesion.set(true);
         }
