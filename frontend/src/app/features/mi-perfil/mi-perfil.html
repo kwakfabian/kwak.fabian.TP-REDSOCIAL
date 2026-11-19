@@ -2,7 +2,21 @@
 
   @if (authService.currentUserData(); as usuario) {
 
-    <h1>Mi Perfil</h1>
+    <div class="encabezado-perfil">
+      <h1>Mi Perfil</h1>
+
+      <button
+        type="button"
+        class="boton-perfil"
+        (click)="abrirEditar(modalPerfil, inputFoto)"
+      >
+        Editar perfil
+      </button>
+    </div>
+
+    @if (successMessage()) {
+      <p class="mensaje-exito" role="status">{{ successMessage() }}</p>
+    }
 
     <div class="perfil-datos">
 
@@ -35,10 +49,13 @@
 
       @if (cargandoPublicaciones()) {
         <p>Cargando publicaciones...</p>
+
       } @else if (errorPublicaciones()) {
         <p>{{ errorPublicaciones() }}</p>
+
       } @else if (publicaciones().length === 0) {
         <p>Todavía no realizaste ninguna publicación.</p>
+
       } @else {
 
         @for (publicacion of publicaciones(); track publicacion._id) {
@@ -46,7 +63,6 @@
           <article class="perfil-publicacion">
 
             <h3>{{ publicacion.titulo }}</h3>
-
             <p>{{ publicacion.descripcion }}</p>
 
             @if (publicacion.imagenUrl) {
@@ -56,7 +72,73 @@
               >
             }
 
-            <p>Me gusta: {{ publicacion.cantidadLikes }}</p>
+            <p class="cantidad-likes">Me gusta: {{ publicacion.cantidadLikes }}</p>
+
+            <a
+              class="enlace-detalle"
+              [routerLink]="['/publicaciones', publicacion._id]"
+            >
+              Abrir publicación y comentar
+            </a>
+
+            @if (comentariosPorPublicacion()[publicacion._id]; as estado) {
+              <div class="comentarios-perfil">
+                <h4>Comentarios ({{ estado.total }})</h4>
+
+                @for (comentario of estado.comentarios; track comentario._id) {
+                  <article class="comentario-perfil">
+
+                    <div class="comentario-fecha">
+                      <span>
+                          @if (comentario.usuarioId === usuario.id) {
+                              Vos
+                          } @else {
+                              {{ comentario.nombreUsuario ? '@' + comentario.nombreUsuario : 'Usuario no disponible' }}
+                          }
+                      </span>
+
+                      <span>{{ comentario.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                    </div>
+
+                    <p>{{ comentario.mensaje }}</p>
+
+                    @if (comentario.modificado) {
+                      <small>Editado</small>
+                    }
+
+                  </article>
+                }
+
+                @if (estado.cargando) {
+                  <p role="status">Cargando comentarios...</p>
+
+                } @else if (estado.error) {
+                  <p class="mensaje-error" role="alert">{{ estado.error }}</p>
+
+                  <button
+                    type="button"
+                    class="boton-secundario"
+                    (click)="cargarComentarios(publicacion._id)"
+                  >
+                    Reintentar
+                  </button>
+
+                } @else if (estado.comentarios.length === 0) {
+                  <p>Todavía no hay comentarios.</p>
+                }
+
+                @if (!estado.error && estado.offset < estado.total) {
+                  <button
+                    type="button"
+                    class="boton-secundario"
+                    [disabled]="estado.cargando"
+                    (click)="cargarComentarios(publicacion._id)"
+                  >
+                    Cargar más
+                  </button>
+                }
+              </div>
+            }
 
           </article>
         }
@@ -66,4 +148,160 @@
   } @else {
     <p>No se encontraron los datos del usuario.</p>
   }
+
+  <dialog
+    #modalPerfil
+    class="modal-perfil"
+    aria-labelledby="titulo-editar-perfil"
+    (cancel)="$event.preventDefault(); cerrarEditar(modalPerfil)"
+  >
+    <h2 id="titulo-editar-perfil">Editar perfil</h2>
+
+    <form [formGroup]="perfilForm" (ngSubmit)="onSubmit(modalPerfil)">
+
+      <div class="campo-perfil">
+        <label for="perfil-nombre">Nombre</label>
+
+        <input
+          id="perfil-nombre"
+          type="text"
+          formControlName="nombre"
+          maxlength="100"
+          autofocus
+          [readOnly]="isLoading()"
+        >
+
+        @if (perfilForm.get('nombre')?.touched && perfilForm.get('nombre')?.invalid) {
+          <small class="mensaje-error">Ingresá entre 2 y 100 caracteres.</small>
+        }
+      </div>
+
+      <div class="campo-perfil">
+        <label for="perfil-apellido">Apellido</label>
+
+        <input
+          id="perfil-apellido"
+          type="text"
+          formControlName="apellido"
+          maxlength="100"
+          [readOnly]="isLoading()"
+        >
+
+        @if (perfilForm.get('apellido')?.touched && perfilForm.get('apellido')?.invalid) {
+          <small class="mensaje-error">Ingresá entre 2 y 100 caracteres.</small>
+        }
+      </div>
+
+      <div class="campo-perfil">
+        <label for="perfil-email">Correo</label>
+
+        <input
+          id="perfil-email"
+          type="email"
+          formControlName="email"
+          maxlength="254"
+          [readOnly]="isLoading()"
+        >
+
+        @if (perfilForm.get('email')?.touched && perfilForm.get('email')?.invalid) {
+          <small class="mensaje-error">Ingresá un correo válido.</small>
+        }
+      </div>
+
+      <div class="campo-perfil">
+        <label for="perfil-nombreUsuario">Nombre de usuario</label>
+
+        <input
+          id="perfil-nombreUsuario"
+          type="text"
+          formControlName="nombreUsuario"
+          maxlength="20"
+          [readOnly]="isLoading()"
+        >
+
+        @if (perfilForm.get('nombreUsuario')?.touched && perfilForm.get('nombreUsuario')?.invalid) {
+          <small class="mensaje-error">Ingresá entre 2 y 20 caracteres.</small>
+        }
+      </div>
+
+      <div class="campo-perfil">
+        <label for="perfil-fechaNacimiento">Fecha de nacimiento</label>
+
+        <input
+          id="perfil-fechaNacimiento"
+          type="date"
+          formControlName="fechaNacimiento"
+          [readOnly]="isLoading()"
+        >
+
+        @if (perfilForm.get('fechaNacimiento')?.touched && perfilForm.get('fechaNacimiento')?.invalid) {
+          <small class="mensaje-error">Ingresá una fecha válida.</small>
+        }
+      </div>
+
+      <div class="campo-perfil">
+        <label for="perfil-descripcionBreve">Descripción breve</label>
+
+        <textarea
+          id="perfil-descripcionBreve"
+          formControlName="descripcionBreve"
+          rows="3"
+          maxlength="200"
+          [readOnly]="isLoading()"
+        ></textarea>
+
+        @if (perfilForm.get('descripcionBreve')?.touched && perfilForm.get('descripcionBreve')?.invalid) {
+          <small class="mensaje-error">
+            Escribí una descripción de hasta 200 caracteres.
+          </small>
+        }
+      </div>
+
+      <div class="campo-perfil">
+        <label for="perfil-foto">Cambiar foto (opcional)</label>
+
+        <input
+          #inputFoto
+          id="perfil-foto"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          [disabled]="isLoading()"
+          (change)="seleccionarFoto($event)"
+        >
+
+        <small>
+          JPG, PNG o WebP, hasta 5 MB. Si no elegís otra foto, conservás la actual.
+        </small>
+
+        @if (errorImagen()) {
+          <small class="mensaje-error" role="alert">{{ errorImagen() }}</small>
+        }
+      </div>
+
+      @if (errorMessage()) {
+        <p class="mensaje-error" role="alert">{{ errorMessage() }}</p>
+      }
+
+      <div class="acciones-perfil">
+        <button
+          type="button"
+          class="boton-secundario"
+          [disabled]="isLoading()"
+          (click)="cerrarEditar(modalPerfil)"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="submit"
+          class="boton-perfil"
+          [disabled]="isLoading()"
+        >
+          {{ isLoading() ? 'Guardando...' : 'Guardar cambios' }}
+        </button>
+      </div>
+
+    </form>
+  </dialog>
+
 </section>

@@ -58,7 +58,7 @@
                                 @if (esPropietario(comentario)) {
                                     Vos
                                 } @else {
-                                    Usuario {{ comentario.usuarioId }}
+                                    {{ comentario.nombreUsuario ? '@' + comentario.nombreUsuario : 'Usuario no disponible' }}
                                 }
                             </span>
 

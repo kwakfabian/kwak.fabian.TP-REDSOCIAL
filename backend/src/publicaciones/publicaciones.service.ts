@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Publicaciones } from './publicaciones.schema.js';
 import { CrearPublicacionesDto } from './publicaciones.dto.js';
-import { Usuario } from '../auth/usuario.schema.js';
+import { Usuario } from '../usuarios/usuario.schema.js';
 import { ImagenesService } from '../auth/imagenes.service.js';
 
 @Injectable()

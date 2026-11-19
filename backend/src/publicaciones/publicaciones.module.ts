@@ -6,7 +6,7 @@ import { Publicaciones, PublicacionesSchema } from './publicaciones.schema.js';
 import { ComentariosController } from '../comentarios/comentarios.controller.js';
 import { ComentariosService } from '../comentarios/comentarios.service.js';
 import { Comentarios, ComentariosSchema } from '../comentarios/comentarios.schema.js';
-import { Usuario, UsuarioSchema } from '../auth/usuario.schema.js';
+import { Usuario, UsuarioSchema } from '../usuarios/usuario.schema.js';
 import { ImagenesService } from '../auth/imagenes.service.js';
 
 @Module({

@@ -2,7 +2,7 @@ import { BadRequestException, ConflictException, Injectable, UnauthorizedExcepti
 import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { Model, mongo } from 'mongoose';
-import { Usuario } from './usuario.schema.js';
+import { Usuario } from '../usuarios/usuario.schema.js';
 import { CredencialesDto } from './credenciales.dto.js';
 import { RegistroDto } from './registro.dto.js';
 import { ImagenesService } from './imagenes.service.js';
@@ -91,7 +91,7 @@ export class AuthService {
     return {
       access_token: await this.jwt.signAsync({ sub: id, email, perfil }),
       token_type: 'Bearer',
-      expires_in: 900,
+      expires_in: 180,
     };
   }
 

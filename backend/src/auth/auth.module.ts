@@ -6,13 +6,13 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthController } from './auth.controller.js';
 import { AuthService } from './auth.service.js';
 import { ImagenesService } from './imagenes.service.js';
-import { Usuario, UsuarioSchema } from './usuario.schema.js';
+import { Usuario, UsuarioSchema } from '../usuarios/usuario.schema.js';
 
 @Module({
   imports: [ PassportModule, MongooseModule.forFeature([ { name: Usuario.name, schema: UsuarioSchema } ]),
     JwtModule.registerAsync({ useFactory: () => ({
         secret: process.env.JWT_SECRET,
-        signOptions: { expiresIn: '15m', algorithm: 'HS256' },
+        signOptions: { expiresIn: '3m', algorithm: 'HS256' },
       }),
     }),
   ],

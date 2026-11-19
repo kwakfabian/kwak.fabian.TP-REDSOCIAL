@@ -1,7 +1,8 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { Comentarios } from './comentarios.schema.js';
+import { Comentarios, type ComentariosDocument } from './comentarios.schema.js';
+import { Usuario } from '../usuarios/usuario.schema.js';
 import { ComentariosDto } from './comentarios.dto.js';
 import { Publicaciones } from '../publicaciones/publicaciones.schema.js';
 
@@ -13,7 +14,10 @@ export class ComentariosService {
     private readonly comentarios: Model<Comentarios>,
 
     @InjectModel(Publicaciones.name)
-    private readonly publicaciones: Model<Publicaciones>
+    private readonly publicaciones: Model<Publicaciones>,
+
+    @InjectModel(Usuario.name)
+    private readonly usuarios: Model<Usuario>
   ) {}
 
   async crear(publicacionId: string, datos: ComentariosDto, usuarioId: string) {
@@ -37,7 +41,9 @@ export class ComentariosService {
       modificado: false
     });
 
-    return comentario;
+    const [respuesta] = await this.agregarAutores([comentario]);
+
+    return respuesta;
   }
 
   async listar(publicacionId: string, offset: number = 0, limit: number = 5) {
@@ -71,8 +77,9 @@ export class ComentariosService {
       .exec();
 
     const total = await this.comentarios.countDocuments(filtro);
+    const comentariosConAutores = await this.agregarAutores(comentarios);
 
-    return { comentarios, total, offset, limit };
+    return { comentarios: comentariosConAutores, total, offset, limit };
   }
 
   async editar(id: string, datos: ComentariosDto, usuarioId: string) {
@@ -104,6 +111,26 @@ export class ComentariosService {
 
     await comentario.save();
 
-    return comentario;
+    const [respuesta] = await this.agregarAutores([comentario]);
+
+    return respuesta;
+  }
+
+  private async agregarAutores(comentarios: ComentariosDocument[]) {
+    if (comentarios.length === 0) return [];
+
+    const usuarios = await this.usuarios.find({
+      _id: { $in: comentarios.map(comentario => comentario.usuarioId) }
+    }).select('nombreUsuario').lean().exec();
+
+    const nombres = new Map(usuarios.map(usuario => [
+      usuario._id.toString(),
+      usuario.nombreUsuario
+    ]));
+
+    return comentarios.map(comentario => ({
+      ...comentario.toObject(),
+      nombreUsuario: nombres.get(comentario.usuarioId.toString()) ?? null
+    }));
   }
 }

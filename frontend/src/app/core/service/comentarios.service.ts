@@ -8,6 +8,7 @@ export interface Comentario {
     _id: string;
     publicacionId: string;
     usuarioId: string;
+    nombreUsuario: string | null;
     mensaje: string;
     modificado: boolean;
     createdAt: string;

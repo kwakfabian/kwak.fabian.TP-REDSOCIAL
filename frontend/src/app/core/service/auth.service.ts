@@ -21,6 +21,15 @@ export interface RegistroUsuario {
     fotoPerfil: File | null;
 }
 
+export interface EditarPerfil {
+    nombre: string;
+    apellido: string;
+    email: string;
+    nombreUsuario: string;
+    fechaNacimiento: string;
+    descripcionBreve: string;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -54,7 +63,6 @@ export class AuthService {
 
     signUp(datos: RegistroUsuario) {
         const formData = new FormData();
-
         formData.append('email', datos.correo);
         formData.append('password', datos.password);
         formData.append('repetirPassword', datos.repetirPassword);
@@ -130,7 +138,6 @@ export class AuthService {
 
     private iniciarContador() {
         this.detenerContador();
-
         const token = this.accesToken();
 
         if (!token) {
@@ -154,7 +161,6 @@ export class AuthService {
             this.finalizarSesion();
             return;
         }
-
         this.verificarTiempo();
 
         if (this.vencimiento > Date.now()) {
@@ -166,7 +172,6 @@ export class AuthService {
 
     private verificarTiempo() {
         const segundos = Math.max(0, Math.ceil((this.vencimiento - Date.now()) / 1000));
-
         this.segundosRestantes.set(segundos);
 
         if (segundos === 0) {
@@ -174,7 +179,7 @@ export class AuthService {
             return;
         }
 
-        if (segundos <= 300 && !this.avisoMostrado) {
+        if (segundos <= 120 && !this.avisoMostrado) {
             this.avisoMostrado = true;
             this.mostrarAvisoSesion.set(true);
         }
@@ -199,6 +204,32 @@ export class AuthService {
         this.avisoMostrado = false;
         this.segundosRestantes.set(0);
         this.mostrarAvisoSesion.set(false);
+    }
+
+    actualizarPerfil(datos: EditarPerfil, imagen?: File) {
+        const formData = new FormData();
+
+        formData.append('nombre', datos.nombre);
+        formData.append('apellido', datos.apellido);
+        formData.append('email', datos.email);
+        formData.append('nombreUsuario', datos.nombreUsuario);
+        formData.append('fechaNacimiento', datos.fechaNacimiento);
+        formData.append('descripcionBreve', datos.descripcionBreve);
+
+        if (imagen) {
+            formData.append('imagenPerfil', imagen);
+        }
+
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${this.accesToken() ?? ''}`
+        });
+
+        return this.http.put<Usuario>(environment.apiUrl + '/usuarios/me', formData, { headers }).pipe(
+            tap((usuario) => {
+                this.currentUser.set(usuario);
+                this.currentUserData.set(usuario);
+            })
+        );
     }
 
     signOut() {
