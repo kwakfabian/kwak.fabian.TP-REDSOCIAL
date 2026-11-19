@@ -40,3 +40,122 @@ app-footer {
     width: 100%;
     flex-shrink: 0;
 }
+
+.modal-sesion {
+    width: 90%;
+    max-width: 460px;
+    max-height: 90dvh;
+    margin: auto;
+    padding: 30px;
+    box-sizing: border-box;
+    overflow-y: auto;
+
+    background-color: #181818;
+    border: 1px solid #333333;
+    border-radius: 12px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.modal-sesion::backdrop {
+    background-color: rgba(0, 0, 0, 0.75);
+}
+
+.modal-sesion h2 {
+    margin: 0 0 15px;
+    font-size: 23px;
+}
+
+.modal-sesion p {
+    margin: 0 0 20px;
+
+    color: #bbbbbb;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.modal-sesion .tiempo-sesion {
+    padding: 12px;
+
+    background-color: rgba(0, 140, 255, 0.08);
+    border: 1px solid rgba(0, 140, 255, 0.25);
+    border-radius: 8px;
+
+    text-align: center;
+}
+
+.tiempo-sesion strong {
+    color: #55b5ff;
+    font-variant-numeric: tabular-nums;
+}
+
+.modal-sesion .error-sesion {
+    padding: 12px;
+
+    background-color: rgba(255, 70, 70, 0.08);
+    border: 1px solid rgba(255, 70, 70, 0.25);
+    border-radius: 8px;
+
+    color: #ff7777;
+    overflow-wrap: anywhere;
+}
+
+.acciones-sesion {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.acciones-sesion button {
+    padding: 11px 16px;
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.boton-no-extender {
+    background-color: #242424;
+    border: 1px solid #444444;
+    color: #dddddd;
+}
+
+.boton-no-extender:hover:not(:disabled) {
+    background-color: #333333;
+}
+
+.boton-extender {
+    background-color: #008cff;
+    border: 1px solid #008cff;
+    color: #ffffff;
+}
+
+.boton-extender:hover:not(:disabled) {
+    background-color: #0075d6;
+}
+
+.acciones-sesion button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.acciones-sesion button:focus-visible {
+    outline: 2px solid #55b5ff;
+    outline-offset: 3px;
+}
+
+@media (max-width: 500px) {
+    .modal-sesion {
+        padding: 22px;
+    }
+
+    .acciones-sesion button {
+        flex: 1;
+    }
+}

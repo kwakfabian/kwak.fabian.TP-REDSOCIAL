@@ -8,4 +8,50 @@
     </main>
 
     <app-footer></app-footer>
+
+    @if (authService.mostrarAvisoSesion()) {
+        <dialog
+            #modalSesion
+            class="modal-sesion"
+            aria-labelledby="titulo-sesion"
+            aria-describedby="descripcion-sesion"
+            (cancel)="$event.preventDefault(); cerrarAvisoSesion()"
+        >
+            <h2 id="titulo-sesion">Tu sesión está por vencer</h2>
+
+            <p id="descripcion-sesion">
+                Quedan menos de 5 minutos de sesión.
+                ¿Querés extenderla por otros 15 minutos?
+            </p>
+
+            <p class="tiempo-sesion">
+                Tiempo restante: <strong>{{ tiempoRestante() }}</strong>
+            </p>
+
+            @if (errorSesion()) {
+                <p class="error-sesion" role="alert">{{ errorSesion() }}</p>
+            }
+
+            <div class="acciones-sesion">
+                <button
+                    type="button"
+                    class="boton-no-extender"
+                    [disabled]="extendiendoSesion()"
+                    (click)="cerrarAvisoSesion()"
+                >
+                    Ahora no
+                </button>
+
+                <button
+                    type="button"
+                    class="boton-extender"
+                    autofocus
+                    [disabled]="extendiendoSesion()"
+                    (click)="extenderSesion()"
+                >
+                    {{ extendiendoSesion() ? 'Extendiendo...' : 'Extender sesión' }}
+                </button>
+            </div>
+        </dialog>
+    }
 }
