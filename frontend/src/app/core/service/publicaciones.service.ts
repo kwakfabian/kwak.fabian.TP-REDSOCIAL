@@ -6,6 +6,8 @@ import { Observable } from "rxjs";
 export interface Publicacion {
     _id: string;
     usuarioId: string;
+    nombreUsuario?: string | null;
+    imagenPerfil?: string | null;
     titulo: string;
     descripcion: string;
     imagenUrl: string;

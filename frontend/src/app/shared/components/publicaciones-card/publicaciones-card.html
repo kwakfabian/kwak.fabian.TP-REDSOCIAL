@@ -1,6 +1,24 @@
 <article class="publicacion-card">
     <div class="publicacion-contenido">
 
+        <div class="autor-publicacion">
+            @if (publicacion().imagenPerfil; as imagenPerfil) {
+                <img
+                    class="autor-imagen"
+                    [src]="obtenerUrlImagen(imagenPerfil)"
+                    alt="Foto del autor"
+                >
+            } @else {
+                <span class="autor-sin-imagen" aria-label="Sin foto de perfil">
+                    {{ publicacion().nombreUsuario?.charAt(0)?.toUpperCase() || '?' }}
+                </span>
+            }
+
+            <span class="autor-nombre">
+                {{ publicacion().nombreUsuario ? '@' + publicacion().nombreUsuario : 'Usuario no disponible' }}
+            </span>
+        </div>
+
         <h2>{{ publicacion().titulo }}</h2>
         <p class="descripcion">{{ publicacion().descripcion }}</p>
 

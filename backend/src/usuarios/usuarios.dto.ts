@@ -1,5 +1,13 @@
 import { Transform } from 'class-transformer';
-import { IsDateString, IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsDateString, IsEmail, IsIn, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { RegistroDto } from '../auth/registro.dto.js';
+
+export class CrearUsuarioDto extends RegistroDto {
+
+    @IsString()
+    @IsIn(['usuario', 'administrador'])
+    perfil: 'usuario' | 'administrador';
+}
 
 export class EditarPerfilDto {
 

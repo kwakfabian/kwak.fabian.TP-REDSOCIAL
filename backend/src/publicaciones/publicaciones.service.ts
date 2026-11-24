@@ -86,7 +86,26 @@ export class PublicacionesService {
 
     const total = await this.publicaciones.countDocuments(filtro);
 
-    return { publicaciones, total, offset, limit };
+    const usuarios = await this.usuarios.find({
+      _id: { $in: publicaciones.map(publicacion => publicacion.usuarioId) }
+    }).select('nombreUsuario imagenPerfil').lean().exec();
+
+    const autores = new Map(usuarios.map(usuario => [
+      usuario._id.toString(),
+      usuario
+    ]));
+
+    const publicacionesConAutores = publicaciones.map(publicacion => {
+      const autor = autores.get(publicacion.usuarioId.toString());
+
+      return {
+        ...publicacion,
+        nombreUsuario: autor?.nombreUsuario ?? null,
+        imagenPerfil: autor?.imagenPerfil ?? null
+      };
+    });
+
+    return { publicaciones: publicacionesConAutores, total, offset, limit };
   }
 
   async obtenerPorId(id: string) {
@@ -103,9 +122,14 @@ export class PublicacionesService {
       throw new NotFoundException('No existe la publicacion');
     }
 
+    const autor = await this.usuarios.findById(publicacion.usuarioId)
+      .select('nombreUsuario imagenPerfil').lean().exec();
+
     return {
       ...publicacion.toObject(),
-      cantidadLikes: publicacion.likes.length
+      cantidadLikes: publicacion.likes.length,
+      nombreUsuario: autor?.nombreUsuario ?? null,
+      imagenPerfil: autor?.imagenPerfil ?? null
     };
   }
 

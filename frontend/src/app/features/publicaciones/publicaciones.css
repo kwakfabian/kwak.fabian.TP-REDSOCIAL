@@ -508,3 +508,27 @@
         flex-direction: column;
     }
 }
+
+/* CARGANDO */
+
+.cargando-publicaciones {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60dvh;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #292929;
+    border-top-color: #008cff;
+    border-radius: 50%;
+    animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar {
+    to {
+        transform: rotate(360deg);
+    }
+}

@@ -62,24 +62,10 @@
 
           <article class="perfil-publicacion">
 
-            <h3>{{ publicacion.titulo }}</h3>
-            <p>{{ publicacion.descripcion }}</p>
-
-            @if (publicacion.imagenUrl) {
-              <img
-                [src]="obtenerUrlImagen(publicacion.imagenUrl)"
-                alt="Imagen de la publicación"
-              >
-            }
-
-            <p class="cantidad-likes">Me gusta: {{ publicacion.cantidadLikes }}</p>
-
-            <a
-              class="enlace-detalle"
-              [routerLink]="['/publicaciones', publicacion._id]"
-            >
-              Abrir publicación y comentar
-            </a>
+            <app-publicaciones-card
+              [publicacion]="publicacion"
+              (publicacionEliminada)="publicacionEliminada()"
+            />
 
             @if (comentariosPorPublicacion()[publicacion._id]; as estado) {
               <div class="comentarios-perfil">

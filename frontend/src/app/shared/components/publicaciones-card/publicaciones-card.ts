@@ -3,6 +3,7 @@ import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Publicacion, PublicacionesService } from '../../../core/service/publicaciones.service';
 import { AuthService } from '../../../core/service/auth.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
     selector: 'app-publicaciones-card',
@@ -61,7 +62,7 @@ export class PublicacionesCard {
     obtenerUrlImagen(ruta: string): string {
         if (!ruta) return '';
         if (ruta.startsWith('http://') || ruta.startsWith('https://')) return ruta;
-        return `http://localhost:3100/${ruta.replace(/^\/+/, '')}`;
+        return `${environment.apiUrl}/${ruta.replace(/^\/+/, '')}`;
     }
 
     cambiarLike() {

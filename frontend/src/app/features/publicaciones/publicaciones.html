@@ -1,3 +1,8 @@
+@if (cargando()) {
+    <div class="cargando-publicaciones" role="status" aria-label="Cargando publicaciones">
+        <span class="spinner" aria-hidden="true"></span>
+    </div>
+} @else {
 <section class="seccion-publicaciones">
 
     <div class="encabezado-publicaciones">
@@ -40,10 +45,7 @@
         <p class="mensaje-exito" role="status">{{ successMessage() }}</p>
     }
 
-    @if (cargando()) {
-        <p>Cargando publicaciones...</p>
-
-    } @else if (mensajeError()) {
+    @if (mensajeError()) {
         <p class="mensaje-error" role="alert">{{ mensajeError() }}</p>
 
     } @else if (publicaciones().length === 0) {
@@ -198,3 +200,4 @@
     </dialog>
 
 </section>
+}

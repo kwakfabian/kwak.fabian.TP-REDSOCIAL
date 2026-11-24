@@ -7,7 +7,7 @@ import { Comentario, ComentariosService } from '../../core/service/comentarios.s
 import { apiError } from '../../core/service/api-error';
 import { environment } from '../../../environments/environment';
 import { DatePipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { PublicacionesCard } from '../../shared/components/publicaciones-card/publicaciones-card';
 
 interface EstadoComentarios {
   comentarios: Comentario[];
@@ -18,7 +18,7 @@ interface EstadoComentarios {
 }
 
 @Component({
-  imports: [DatePipe, ReactiveFormsModule, RouterLink],
+  imports: [DatePipe, ReactiveFormsModule, PublicacionesCard],
   selector: 'app-mi-perfil',
   styleUrl: './mi-perfil.css',
   templateUrl: './mi-perfil.html',
@@ -200,6 +200,13 @@ export class MiPerfil {
         this.cargandoPublicaciones.set(false);
       }
     });
+  }
+
+  publicacionEliminada() {
+    const usuario = this.authService.currentUserData();
+    if (!usuario) return;
+
+    this.cargarPublicaciones(usuario.id);
   }
 
   cargarComentarios(publicacionId: string) {

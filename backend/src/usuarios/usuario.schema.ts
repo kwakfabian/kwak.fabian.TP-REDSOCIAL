@@ -11,6 +11,9 @@ export class Usuario {
   @Prop({ default: 'usuario', enum: ['usuario', 'administrador'] })
   perfil: string;
 
+  @Prop({ default: true })
+  activo: boolean;
+
   @Prop({ required: true, unique: true, lowercase: true, trim: true })
   email: string;
 

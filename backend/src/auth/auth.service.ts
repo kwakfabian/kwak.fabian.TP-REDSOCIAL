@@ -40,6 +40,7 @@ export class AuthService {
         descripcionBreve: datos.descripcionBreve,
         imagenPerfil: subida?.url ?? '',
         perfil: 'usuario',
+        activo: true,
       });
 
       return this.token(usuario.id as string, usuario.email, usuario.perfil);
@@ -81,6 +82,10 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
+    if (usuario.activo === false) {
+      throw new UnauthorizedException('Tu usuario está deshabilitado. No estás autorizado a ingresar');
+    }
+
     return {
       ...(await this.token(usuario.id as string, usuario.email, usuario.perfil)),
       usuario: await this.perfil(usuario.id as string),
@@ -96,9 +101,9 @@ export class AuthService {
   }
 
   async refrescar(datos: { sub: string; email: string; perfil: string }) {
-    await this.perfil(datos.sub);
+    const usuario = await this.perfil(datos.sub);
 
-    return this.token(datos.sub, datos.email, datos.perfil);
+    return this.token(usuario.id, usuario.email, usuario.perfil);
   }
 
   async perfil(id: string) {
@@ -106,6 +111,10 @@ export class AuthService {
 
     if (!usuario) {
       throw new UnauthorizedException('El usuario no existe');
+    }
+
+    if (usuario.activo === false) {
+      throw new UnauthorizedException('Tu usuario está deshabilitado. No estás autorizado a ingresar');
     }
 
     return {
@@ -118,6 +127,7 @@ export class AuthService {
       descripcionBreve: usuario.descripcionBreve,
       imagenPerfil: usuario.imagenPerfil,
       perfil: usuario.perfil,
+      activo: true,
     };
   }
 }
