@@ -8,6 +8,7 @@ import { apiError } from '../../core/service/api-error';
 import { environment } from '../../../environments/environment';
 import { DatePipe } from '@angular/common';
 import { PublicacionesCard } from '../../shared/components/publicaciones-card/publicaciones-card';
+import { InicialPipe } from '../../shared/pipes/inicial.pipe';
 
 interface EstadoComentarios {
   comentarios: Comentario[];
@@ -18,7 +19,7 @@ interface EstadoComentarios {
 }
 
 @Component({
-  imports: [DatePipe, ReactiveFormsModule, PublicacionesCard],
+  imports: [DatePipe, ReactiveFormsModule, PublicacionesCard, InicialPipe],
   selector: 'app-mi-perfil',
   styleUrl: './mi-perfil.css',
   templateUrl: './mi-perfil.html',

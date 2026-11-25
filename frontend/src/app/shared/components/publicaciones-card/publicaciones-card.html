@@ -10,12 +10,12 @@
                 >
             } @else {
                 <span class="autor-sin-imagen" aria-label="Sin foto de perfil">
-                    {{ publicacion().nombreUsuario?.charAt(0)?.toUpperCase() || '?' }}
+                    {{ publicacion().nombreUsuario | inicial }}
                 </span>
             }
 
             <span class="autor-nombre">
-                {{ publicacion().nombreUsuario ? '@' + publicacion().nombreUsuario : 'Usuario no disponible' }}
+                {{ publicacion().nombreUsuario | nombreUsuario }}
             </span>
         </div>
 
@@ -45,7 +45,7 @@
                 }
             </button>
 
-            <span>{{ totalLikes() }} likes</span>
+            <span>{{ totalLikes() | meGusta }}</span>
             <span>{{ publicacion().createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
 
             @if (mostrarComentarios()) {

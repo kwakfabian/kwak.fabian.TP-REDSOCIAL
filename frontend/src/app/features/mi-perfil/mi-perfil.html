@@ -27,7 +27,9 @@
             alt="Foto de perfil"
           >
         } @else {
-          <p>Sin foto de perfil</p>
+          <p aria-label="Sin foto de perfil">
+            {{ usuario.nombreUsuario | inicial }}
+          </p>
         }
       </div>
 

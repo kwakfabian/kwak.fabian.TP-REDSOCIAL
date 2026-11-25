@@ -4,10 +4,13 @@ import { RouterLink } from '@angular/router';
 import { Publicacion, PublicacionesService } from '../../../core/service/publicaciones.service';
 import { AuthService } from '../../../core/service/auth.service';
 import { environment } from '../../../../environments/environment';
+import { NombreUsuarioPipe } from '../../pipes/nombre-usuario.pipe';
+import { InicialPipe } from '../../pipes/inicial.pipe';
+import { MeGustaPipe } from '../../pipes/me-gusta.pipe';
 
 @Component({
     selector: 'app-publicaciones-card',
-    imports: [DatePipe, RouterLink],
+    imports: [DatePipe, RouterLink, NombreUsuarioPipe, InicialPipe, MeGustaPipe],
     templateUrl: './publicaciones-card.html',
     styleUrl: './publicaciones-card.css'
 })
