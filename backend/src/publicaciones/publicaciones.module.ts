@@ -8,6 +8,9 @@ import { ComentariosService } from '../comentarios/comentarios.service.js';
 import { Comentarios, ComentariosSchema } from '../comentarios/comentarios.schema.js';
 import { Usuario, UsuarioSchema } from '../usuarios/usuario.schema.js';
 import { ImagenesService } from '../auth/imagenes.service.js';
+import { AdministradorGuard } from '../auth/administrador.guard.js';
+import { EstadisticasController } from './estadisticas.controller.js';
+import { EstadisticasService } from './estadisticas.service.js';
 
 @Module({
   imports: [
@@ -17,7 +20,17 @@ import { ImagenesService } from '../auth/imagenes.service.js';
       { name: Comentarios.name, schema: ComentariosSchema }
     ])
   ],
-  controllers: [PublicacionesController, ComentariosController],
-  providers: [PublicacionesService, ComentariosService, ImagenesService],
+  controllers: [
+    PublicacionesController,
+    ComentariosController,
+    EstadisticasController
+  ],
+  providers: [
+    PublicacionesService,
+    ComentariosService,
+    ImagenesService,
+    AdministradorGuard,
+    EstadisticasService
+  ],
 })
 export class PublicacionesModule {}

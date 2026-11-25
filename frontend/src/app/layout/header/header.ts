@@ -20,6 +20,10 @@ export class Header {
         return this.router.lastSuccessfulNavigation() !== null && !this.esLogin() && !this.esRegister();
     });
 
+    esAdministrador = computed(() => {
+        return this.authService.currentUserData()?.perfil === 'administrador';
+    });
+
     cerrarSesion() {
         this.authService.signOut();
         this.router.navigate(['/login']);

@@ -1,0 +1,290 @@
+<section class="dashboard-usuarios">
+
+    @if (cargando()) {
+        <div class="cargando" role="status" aria-label="Cargando usuarios">
+            <span class="spinner" aria-hidden="true"></span>
+        </div>
+    } @else {
+        <div class="encabezado">
+            <div>
+                <h1>Administrar usuarios</h1>
+                <p>Creá usuarios y administrá su acceso a KwakSocial.</p>
+            </div>
+
+            <button
+                type="button"
+                class="boton-principal"
+                (click)="abrirCrear(modalCrear, inputFoto)"
+            >
+                + Crear usuario
+            </button>
+        </div>
+
+        @if (successMessage()) {
+            <p class="mensaje-exito" role="status">{{ successMessage() }}</p>
+        }
+
+        @if (errorListado()) {
+            <p class="mensaje-error" role="alert">{{ errorListado() }}</p>
+
+            <button type="button" class="boton-secundario" (click)="cargarUsuarios()">
+                Reintentar
+            </button>
+        } @else if (usuarios().length === 0) {
+            <p class="estado-vacio">No hay usuarios registrados.</p>
+        } @else {
+            <div class="tabla-contenedor">
+                <table>
+                    <caption>Usuarios registrados: {{ usuarios().length }}</caption>
+
+                    <thead>
+                        <tr>
+                            <th scope="col">Usuario</th>
+                            <th scope="col">Correo</th>
+                            <th scope="col">Perfil</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @for (usuario of usuarios(); track usuario.id) {
+                            <tr>
+                                <td>
+                                    <div class="datos-usuario">
+                                        @if (usuario.imagenPerfil) {
+                                            <img
+                                                class="foto-usuario"
+                                                [src]="obtenerUrlImagen(usuario.imagenPerfil)"
+                                                [alt]="'Foto de ' + usuario.nombreUsuario"
+                                            >
+                                        } @else {
+                                            <span class="foto-sin-imagen" aria-label="Sin foto de perfil">
+                                                {{ usuario.nombreUsuario.charAt(0).toUpperCase() }}
+                                            </span>
+                                        }
+
+                                        <div>
+                                            <strong>{{ '@' + usuario.nombreUsuario }}</strong>
+                                            <span class="nombre-completo">{{ usuario.nombre }} {{ usuario.apellido }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>{{ usuario.email }}</td>
+                                <td>{{ usuario.perfil === 'administrador' ? 'Administrador' : 'Usuario' }}</td>
+
+                                <td>
+                                    <span class="estado" [class.activo]="usuario.activo" [class.inactivo]="!usuario.activo">
+                                        {{ usuario.activo ? 'Habilitado' : 'Deshabilitado' }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button
+                                        type="button"
+                                        class="boton-estado"
+                                        [class.peligro]="usuario.activo"
+                                        [disabled]="cambiandoEstado()"
+                                        (click)="abrirEstado(usuario, modalEstado)"
+                                    >
+                                        {{ usuario.activo ? 'Deshabilitar' : 'Habilitar' }}
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    }
+
+    <dialog
+        #modalCrear
+        class="modal-usuario"
+        aria-labelledby="titulo-crear-usuario"
+        (cancel)="$event.preventDefault(); cerrarCrear(modalCrear)"
+    >
+        <h2 id="titulo-crear-usuario">Crear usuario</h2>
+
+        <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit(modalCrear)">
+            <fieldset class="formulario" [disabled]="isLoading()">
+
+                <div class="campos-dobles">
+                    <div class="campo">
+                        <label for="usuario-nombre">Nombre</label>
+                        <input id="usuario-nombre" type="text" formControlName="nombre" maxlength="15" autofocus>
+
+                        @if (usuarioForm.controls.nombre.touched && usuarioForm.controls.nombre.invalid) {
+                            <small class="error-campo">Ingresá entre 2 y 15 caracteres.</small>
+                        }
+                    </div>
+
+                    <div class="campo">
+                        <label for="usuario-apellido">Apellido</label>
+                        <input id="usuario-apellido" type="text" formControlName="apellido" maxlength="15">
+
+                        @if (usuarioForm.controls.apellido.touched && usuarioForm.controls.apellido.invalid) {
+                            <small class="error-campo">Ingresá entre 2 y 15 caracteres.</small>
+                        }
+                    </div>
+                </div>
+
+                <div class="campo">
+                    <label for="usuario-email">Correo</label>
+                    <input id="usuario-email" type="email" formControlName="email" maxlength="254">
+
+                    @if (usuarioForm.controls.email.touched && usuarioForm.controls.email.invalid) {
+                        <small class="error-campo">Ingresá un correo válido.</small>
+                    }
+                </div>
+
+                <div class="campo">
+                    <label for="usuario-nombreUsuario">Nombre de usuario</label>
+                    <input id="usuario-nombreUsuario" type="text" formControlName="nombreUsuario" maxlength="20">
+
+                    @if (usuarioForm.controls.nombreUsuario.touched && usuarioForm.controls.nombreUsuario.invalid) {
+                        <small class="error-campo">Ingresá entre 2 y 20 caracteres.</small>
+                    }
+                </div>
+
+                <div class="campos-dobles">
+                    <div class="campo">
+                        <label for="usuario-password">Contraseña</label>
+                        <input id="usuario-password" type="password" formControlName="password" autocomplete="new-password">
+
+                        @if (usuarioForm.controls.password.touched && usuarioForm.controls.password.invalid) {
+                            <small class="error-campo">Usá al menos 8 caracteres, una mayúscula y un número.</small>
+                        }
+                    </div>
+
+                    <div class="campo">
+                        <label for="usuario-repetirPassword">Repetir contraseña</label>
+                        <input id="usuario-repetirPassword" type="password" formControlName="repetirPassword" autocomplete="new-password">
+
+                        @if (usuarioForm.controls.repetirPassword.touched) {
+                            @if (usuarioForm.controls.repetirPassword.invalid) {
+                                <small class="error-campo">Repetí la contraseña de al menos 8 caracteres.</small>
+                            } @else if (usuarioForm.hasError('passwordDistintas')) {
+                                <small class="error-campo">Las contraseñas no coinciden.</small>
+                            }
+                        }
+                    </div>
+                </div>
+
+                <div class="campo">
+                    <label for="usuario-fechaNacimiento">Fecha de nacimiento</label>
+                    <input id="usuario-fechaNacimiento" type="date" formControlName="fechaNacimiento">
+
+                    @if (usuarioForm.controls.fechaNacimiento.touched && usuarioForm.controls.fechaNacimiento.invalid) {
+                        <small class="error-campo">Ingresá la fecha de nacimiento.</small>
+                    }
+                </div>
+
+                <div class="campo">
+                    <label for="usuario-descripcionBreve">Descripción breve</label>
+                    <textarea id="usuario-descripcionBreve" formControlName="descripcionBreve" rows="3" maxlength="200"></textarea>
+
+                    @if (usuarioForm.controls.descripcionBreve.touched && usuarioForm.controls.descripcionBreve.invalid) {
+                        <small class="error-campo">Ingresá una descripción de hasta 200 caracteres.</small>
+                    }
+                </div>
+
+                <div class="campo">
+                    <label for="usuario-foto">Foto de perfil (opcional)</label>
+
+                    <input
+                        #inputFoto
+                        id="usuario-foto"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        (change)="seleccionarFoto($event)"
+                    >
+
+                    <small class="ayuda">JPG, PNG o WebP, hasta 5 MB.</small>
+
+                    @if (errorImagen()) {
+                        <small class="error-campo" role="alert">{{ errorImagen() }}</small>
+                    }
+                </div>
+
+                <fieldset class="seleccion-perfil">
+                    <legend>Perfil del nuevo usuario</legend>
+
+                    <label>
+                        <input type="radio" formControlName="perfil" value="usuario">
+                        Usuario
+                    </label>
+
+                    <label>
+                        <input type="radio" formControlName="perfil" value="administrador">
+                        Administrador
+                    </label>
+                </fieldset>
+
+                @if (errorMessage()) {
+                    <p class="mensaje-error" role="alert">{{ errorMessage() }}</p>
+                }
+
+                <div class="acciones-modal">
+                    <button type="button" class="boton-secundario" (click)="cerrarCrear(modalCrear)">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="boton-principal">
+                        {{ isLoading() ? 'Creando...' : 'Crear usuario' }}
+                    </button>
+                </div>
+
+            </fieldset>
+        </form>
+    </dialog>
+
+    <dialog
+        #modalEstado
+        class="modal-estado"
+        aria-labelledby="titulo-estado-usuario"
+        (cancel)="$event.preventDefault(); cerrarEstado(modalEstado)"
+    >
+        @if (usuarioSeleccionado(); as usuario) {
+            <h2 id="titulo-estado-usuario">{{ usuario.activo ? 'Deshabilitar usuario' : 'Habilitar usuario' }}</h2>
+
+            <p>
+                ¿Querés {{ usuario.activo ? 'deshabilitar' : 'habilitar' }}
+                a <strong>{{ '@' + usuario.nombreUsuario }}</strong>?
+            </p>
+
+            <p class="ayuda">
+                {{ usuario.activo
+                    ? 'El usuario no podrá iniciar sesión ni realizar acciones que requieran una sesión válida.'
+                    : 'El usuario podrá volver a iniciar sesión.' }}
+            </p>
+
+            @if (errorEstado()) {
+                <p class="mensaje-error" role="alert">{{ errorEstado() }}</p>
+            }
+
+            <div class="acciones-modal">
+                <button
+                    type="button"
+                    class="boton-secundario"
+                    [disabled]="cambiandoEstado()"
+                    (click)="cerrarEstado(modalEstado)"
+                    autofocus
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    class="boton-principal"
+                    [disabled]="cambiandoEstado()"
+                    (click)="confirmarEstado(modalEstado)"
+                >
+                    {{ cambiandoEstado() ? 'Guardando...' : 'Confirmar' }}
+                </button>
+            </div>
+        }
+    </dialog>
+
+</section>

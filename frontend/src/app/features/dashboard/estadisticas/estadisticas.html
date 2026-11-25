@@ -1,0 +1,223 @@
+<section class="dashboard-estadisticas">
+
+    <div class="encabezado">
+        <h1>Estadísticas</h1>
+        <p>Consultá la actividad de KwakSocial durante el período que elijas.</p>
+    </div>
+
+    <form [formGroup]="filtroForm" (ngSubmit)="consultar()" class="filtro">
+        <div class="campo">
+            <label for="estadisticas-desde">Desde</label>
+            <input
+                id="estadisticas-desde"
+                type="date"
+                formControlName="desde"
+                [readOnly]="cargando()"
+            >
+
+            @if (filtroForm.controls.desde.touched && filtroForm.controls.desde.invalid) {
+                <small class="error-campo">Seleccioná la fecha inicial.</small>
+            }
+        </div>
+
+        <div class="campo">
+            <label for="estadisticas-hasta">Hasta</label>
+            <input
+                id="estadisticas-hasta"
+                type="date"
+                formControlName="hasta"
+                [readOnly]="cargando()"
+            >
+
+            @if (filtroForm.controls.hasta.touched && filtroForm.controls.hasta.invalid) {
+                <small class="error-campo">Seleccioná la fecha final.</small>
+            }
+        </div>
+
+        <button type="submit" class="boton-principal" [disabled]="cargando()">
+            {{ cargando() ? 'Consultando...' : 'Consultar' }}
+        </button>
+
+        @if (filtroForm.touched && filtroForm.hasError('periodoInvalido')) {
+            <p class="error-periodo" role="alert">
+                La fecha desde no puede ser posterior a la fecha hasta.
+            </p>
+        }
+    </form>
+
+    <p class="aclaracion">
+        Se incluyen publicaciones activas y comentarios de publicaciones activas.
+        Las fechas abarcan días completos en horario argentino.
+    </p>
+
+    @if (cargando()) {
+        <div class="cargando" role="status" aria-label="Cargando estadísticas">
+            <span class="spinner" aria-hidden="true"></span>
+        </div>
+
+    } @else if (mensajeError()) {
+        <p class="mensaje-error" role="alert">{{ mensajeError() }}</p>
+
+    } @else if (consultado()) {
+        <p class="periodo-consultado">
+            Período consultado:
+            <strong>{{ desdeConsultado() | date:'dd/MM/yyyy':'UTC' }}</strong>
+            al
+            <strong>{{ hastaConsultado() | date:'dd/MM/yyyy':'UTC' }}</strong>
+        </p>
+
+        <div class="resumen">
+            <article class="tarjeta-resumen">
+                <span>Publicaciones realizadas</span>
+                <strong>{{ totalPublicaciones() }}</strong>
+            </article>
+
+            <article class="tarjeta-resumen">
+                <span>Comentarios realizados</span>
+                <strong>{{ totalComentarios() }}</strong>
+            </article>
+
+            <article class="tarjeta-resumen">
+                <span>Publicaciones con comentarios en el período</span>
+                <strong>{{ comentariosPorPublicacion().length }}</strong>
+            </article>
+        </div>
+
+        <div class="graficos">
+
+            <article class="tarjeta-grafico">
+                <h2>Publicaciones por usuario</h2>
+                <p class="descripcion">Cantidad de publicaciones creadas por cada usuario en el período.</p>
+
+                @if (publicacionesPorUsuario().length > 0) {
+                    <div class="grafico">
+                        <canvas
+                            #canvasPublicaciones
+                            role="img"
+                            aria-label="Gráfico de barras de publicaciones por usuario. Valores disponibles en Ver datos."
+                        ></canvas>
+                    </div>
+
+                    <details>
+                        <summary>Ver datos</summary>
+
+                        <div class="tabla-contenedor">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Usuario</th>
+                                        <th scope="col">Publicaciones</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @for (dato of publicacionesPorUsuario(); track dato.usuarioId) {
+                                        <tr>
+                                            <td>{{ '@' + dato.nombreUsuario }}</td>
+                                            <td>{{ dato.cantidad }}</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
+                } @else {
+                    <p class="sin-datos">No hay publicaciones para el período seleccionado.</p>
+                }
+            </article>
+
+            <article class="tarjeta-grafico">
+                <h2>Comentarios por día</h2>
+                <p class="descripcion">Cantidad de comentarios realizados cada día del período.</p>
+
+                @if (comentariosPorDia().length > 0) {
+                    <div class="grafico">
+                        <canvas
+                            #canvasComentarios
+                            role="img"
+                            aria-label="Gráfico de líneas de comentarios por día. Valores disponibles en Ver datos."
+                        ></canvas>
+                    </div>
+
+                    @if (totalComentarios() === 0) {
+                        <p class="sin-datos">No se realizaron comentarios en el período seleccionado.</p>
+                    }
+
+                    <details>
+                        <summary>Ver datos</summary>
+
+                        <div class="tabla-contenedor">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Fecha</th>
+                                        <th scope="col">Comentarios</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @for (dato of comentariosPorDia(); track dato.fecha) {
+                                        <tr>
+                                            <td>{{ dato.fecha | date:'dd/MM/yyyy':'UTC' }}</td>
+                                            <td>{{ dato.cantidad }}</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
+                } @else {
+                    <p class="sin-datos">No hay datos para el período seleccionado.</p>
+                }
+            </article>
+
+            <article class="tarjeta-grafico grafico-completo">
+                <h2>Comentarios por publicación</h2>
+                <p class="descripcion">
+                    Distribución de los comentarios realizados en el período.
+                    La publicación puede haberse creado antes de esas fechas.
+                </p>
+
+                @if (comentariosPorPublicacion().length > 0) {
+                    <div class="grafico grafico-torta">
+                        <canvas
+                            #canvasPorPublicacion
+                            role="img"
+                            aria-label="Gráfico de torta de comentarios por publicación. Valores disponibles en Ver datos."
+                        ></canvas>
+                    </div>
+
+                    <details open>
+                        <summary>Ver datos</summary>
+
+                        <div class="tabla-contenedor">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">N.º</th>
+                                        <th scope="col">Publicación</th>
+                                        <th scope="col">Comentarios</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @for (dato of comentariosPorPublicacion(); track dato.publicacionId; let indice = $index) {
+                                        <tr>
+                                            <td>{{ indice + 1 }}</td>
+                                            <td>{{ dato.titulo }}</td>
+                                            <td>{{ dato.cantidad }}</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
+                } @else {
+                    <p class="sin-datos">No hay publicaciones con comentarios en el período seleccionado.</p>
+                }
+            </article>
+
+        </div>
+    }
+
+</section>

@@ -6,6 +6,11 @@
             <a routerLink="/publicaciones" routerLinkActive="active">Publicaciones</a>
             <a routerLink="/mi-perfil" routerLinkActive="active">Mi Perfil</a>
 
+            @if (esAdministrador()) {
+                <a routerLink="/dashboard/usuarios" routerLinkActive="active">Usuarios</a>
+                <a routerLink="/dashboard/estadisticas" routerLinkActive="active">Estadísticas</a>
+            }
+
             <button
                 type="button"
                 class="boton-cerrar-sesion"
