@@ -23,6 +23,7 @@
       <div class="perfil-imagen">
         @if (usuario.imagenPerfil) {
           <img
+            appImagenAlternativa
             [src]="obtenerUrlImagen(usuario.imagenPerfil)"
             alt="Foto de perfil"
           >
@@ -235,8 +236,12 @@
           formControlName="descripcionBreve"
           rows="3"
           maxlength="200"
+          aria-describedby="contador-descripcion"
+          [appContadorCaracteres]="contadorDescripcion"
           [readOnly]="isLoading()"
         ></textarea>
+
+        <small #contadorDescripcion id="contador-descripcion"></small>
 
         @if (perfilForm.get('descripcionBreve')?.touched && perfilForm.get('descripcionBreve')?.invalid) {
           <small class="mensaje-error">

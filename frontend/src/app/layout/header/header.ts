@@ -1,9 +1,10 @@
 import { Component, computed, inject } from '@angular/core';
 import { isActive, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/service/auth.service';
+import { SoloAdministradorDirective } from '../../shared/directives/solo-administrador.directive';
 
 @Component({
-    imports: [RouterLink, RouterLinkActive],
+    imports: [RouterLink, RouterLinkActive, SoloAdministradorDirective],
     selector: 'app-header',
     styleUrl: './header.css',
     templateUrl: './header.html',
@@ -18,10 +19,6 @@ export class Header {
 
     mostrarNavegacion = computed(() => {
         return this.router.lastSuccessfulNavigation() !== null && !this.esLogin() && !this.esRegister();
-    });
-
-    esAdministrador = computed(() => {
-        return this.authService.currentUserData()?.perfil === 'administrador';
     });
 
     cerrarSesion() {
